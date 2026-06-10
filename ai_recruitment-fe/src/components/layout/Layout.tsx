@@ -72,11 +72,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           ) : (
             <div className="flex items-center gap-3">
               <div
-                className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-md"
-                style={{
-                  background: C.GRAD_BRAND,
-                  boxShadow: '0 4px 12px rgba(123,70,155,0.35)',
-                }}
+                className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                style={{ background: C.GRAD_BRAND }}
               >
                 <Zap style={{ width: 18, height: 18, color: '#fff' }} />
               </div>
@@ -96,24 +93,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               to={to}
               className={({ isActive }) =>
                 clsx(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150',
-                  !isActive && 'hover:bg-[#eef0fa]',
+                  'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors duration-150',
+                  isActive ? 'font-semibold' : 'font-medium hover:bg-[#f7f8fc]',
                 )
               }
               style={({ isActive }) =>
-                isActive
-                  ? {
-                      background: 'linear-gradient(135deg, #1B1F4E, #7B2D8E)',
-                      color: C.WHITE,
-                      boxShadow: '0 3px 12px rgba(123,45,142,0.28)',
-                    }
-                  : {}
+                isActive ? { backgroundColor: C.PRIMARY_LIGHT, color: C.LAPIS } : {}
               }
             >
               {({ isActive }) => (
                 <>
-                  <Icon className="w-4 h-4 shrink-0" style={{ color: isActive ? C.WHITE : C.TEXT_MUTED }} />
-                  <span style={{ color: isActive ? C.WHITE : C.TEXT_MUTED }}>{label}</span>
+                  <Icon
+                    className="w-4 h-4 shrink-0"
+                    strokeWidth={isActive ? 2.2 : 2}
+                    style={{ color: isActive ? C.LAPIS : C.TEXT_MUTED }}
+                  />
+                  <span style={{ color: isActive ? C.LAPIS : C.TEXT_MUTED }}>{label}</span>
                 </>
               )}
             </NavLink>
@@ -136,7 +131,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             >
               <div
                 className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 font-semibold text-xs"
-                style={{ background: C.GRAD_JD, color: 'white' }}
+                style={{ backgroundColor: C.LAPIS, color: 'white' }}
               >
                 {(user.name || user.email)[0].toUpperCase()}
               </div>

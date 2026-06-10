@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react'
 import { useQuery, useQueries, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useLocation } from 'react-router-dom'
 import {
-  Users, FileText, Mail, BookOpen,
+  FileText,
   Trash2, Loader2, ChevronRight, CheckCircle2, Circle,
-  ClipboardList, MessageSquare, Plus,
+  Plus,
   ArrowUpRight, TrendingUp, Trophy, Zap, BarChart2,
   Bell, UserCheck, Clock, UserX,
   Calendar, AlertCircle,
@@ -17,70 +17,22 @@ import JDDetailModal from '../components/JDDetailModal'
 import AnimatedNumber from '../components/AnimatedNumber'
 import ProfileBanner from '../components/ProfileBanner'
 
-// ── Stat card data ──────────────────────────────────────────────────────────
+// ── Stat data ───────────────────────────────────────────────────────────────
 
 const STAT_META = [
-  {
-    key:      'jds',
-    label:    'JDs Generated',
-    icon:     FileText,
-    link:     '/jd-generator',
-    gradient: C.GRAD_JD,   // lapis → indigo
-    glow:     '0 4px 14px rgba(97,98,157,0.42)',
-  },
-  {
-    key:      'resumes',
-    label:    'Resumes Screened',
-    icon:     Users,
-    link:     '/resume-screener',
-    gradient: C.GRAD_SCREEN,   // purple → light-purple
-    glow:     '0 4px 14px rgba(137,57,161,0.40)',
-  },
-  {
-    key:      'guides',
-    label:    'Interview Guides',
-    icon:     BookOpen,
-    link:     '/interview',
-    gradient: C.GRAD_GUIDE,   // teal → navy
-    glow:     '0 4px 14px rgba(19,62,73,0.40)',
-  },
-  {
-    key:      'emails',
-    label:    'Emails Drafted',
-    icon:     Mail,
-    link:     '/communication',
-    gradient: C.GRAD_COMMS,   // pink → coral (unchanged)
-    glow:     '0 4px 14px rgba(212,47,123,0.38)',
-  },
+  { key: 'jds',     label: 'JDs Generated',    link: '/jd-generator'    },
+  { key: 'resumes', label: 'Resumes Screened', link: '/resume-screener' },
+  { key: 'guides',  label: 'Interview Guides', link: '/interview'       },
+  { key: 'emails',  label: 'Emails Drafted',   link: '/communication'   },
 ]
 
 // ── Pipeline data ───────────────────────────────────────────────────────────
 
 const PIPELINE = [
-  {
-    step: 1, label: 'JD Generator',           desc: 'Define the role with AI', link: '/jd-generator',
-    icon: FileText,      accent: 'linear-gradient(135deg, #050766, #61629D)',
-    topBar: C.GRAD_JD_H,
-    iconColor: C.INDIGO,
-  },
-  {
-    step: 2, label: 'Resume Screener',         desc: 'AI candidate evaluation', link: '/resume-screener',
-    icon: Users,         accent: 'linear-gradient(135deg, #8939A1, #B17DC1)',
-    topBar: C.GRAD_SCREEN_H,
-    iconColor: C.PURPLE,
-  },
-  {
-    step: 3, label: 'Interview Guide Generator', desc: 'Tailored Q&A + rubric', link: '/interview',
-    icon: ClipboardList, accent: 'linear-gradient(135deg, #133E49, #050766)',
-    topBar: C.GRAD_GUIDE_H,
-    iconColor: C.TEAL,
-  },
-  {
-    step: 4, label: 'Communications',           desc: 'Personalised emails',    link: '/communication',
-    icon: MessageSquare, accent: C.GRAD_PRIMARY,
-    topBar: C.GRAD_COMMS_H,
-    iconColor: C.PINK,
-  },
+  { step: 1, label: 'JD Generator',              desc: 'Define the role with AI', link: '/jd-generator'    },
+  { step: 2, label: 'Resume Screener',           desc: 'AI candidate evaluation', link: '/resume-screener' },
+  { step: 3, label: 'Interview Guide Generator', desc: 'Tailored Q&A + rubric',   link: '/interview'       },
+  { step: 4, label: 'Communications',            desc: 'Personalised emails',     link: '/communication'   },
 ]
 
 // ── Status helpers ──────────────────────────────────────────────────────────
@@ -89,12 +41,6 @@ function statusPill(status: JobDescription['status']): React.CSSProperties {
   if (status === 'active') return { backgroundColor: '#0D6E4A', color: '#fff', fontWeight: 700 }
   if (status === 'closed') return { backgroundColor: '#3D3F52', color: '#fff', fontWeight: 700 }
   return { background: 'transparent', color: C.TEXT_MUTED, fontWeight: 600 }
-}
-
-function statusAccent(status: JobDescription['status']): string {
-  if (status === 'active') return C.SUCCESS
-  if (status === 'closed') return C.TEXT_MUTED
-  return '#61629D'  // draft — secondary lapis, matches dashboard gradient
 }
 
 function timeAgo(iso: string): string {
@@ -177,7 +123,7 @@ export default function DashboardPage() {
       toast.success('Job description deleted')
     },
     onError: () => {
-      toast.error('Failed to delete — please try again')
+      toast.error('Failed to delete. Please try again')
       setConfirmingDeleteId(null)
     },
   })
@@ -299,97 +245,54 @@ export default function DashboardPage() {
       <ProfileBanner />
 
       {/* ════════════════════════════════════════════════════════════════
-          HEADER — nu-grad-dark, blur orbs, CTA
+          PAGE HEADER — left-aligned title + muted subtitle
       ════════════════════════════════════════════════════════════════ */}
-      <div
-        className="relative rounded-2xl overflow-hidden px-8 py-7"
-        style={{
-          background: C.GRAD_DARK,
-          boxShadow: '0 8px 40px -8px rgba(27,31,78,0.55)',
-        }}
-      >
-        {/* Blur orb — top right (purple) */}
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            top: '-40px', right: '-40px',
-            width: '220px', height: '220px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(137,57,161,0.55) 0%, transparent 65%)',
-            filter: 'blur(50px)',
-          }}
-        />
-        {/* Blur orb — bottom left (coral) */}
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            bottom: '-30px', left: '20%',
-            width: '160px', height: '160px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(238,119,124,0.35) 0%, transparent 65%)',
-            filter: 'blur(40px)',
-          }}
-        />
-
-        {/* Content */}
-        <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap">
-          <div>
-            <h1 className="text-2xl font-bold text-white leading-tight">NULogic Recruiter AI</h1>
-            <p className="text-sm font-medium mt-1" style={{ color: 'rgba(255,255,255,0.58)' }}>
-              End-to-End Hiring Intelligence
-            </p>
-          </div>
-
-          <a href="/jd-generator" className="btn-gradient shrink-0">
-            <Plus className="w-4 h-4" />
-            Create New Role
-          </a>
+      <div className="flex items-end justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="font-display text-2xl font-semibold tracking-tight leading-tight" style={{ color: C.TEXT }}>
+            NULogic Recruiter AI
+          </h1>
+          <p className="text-sm mt-1" style={{ color: C.TEXT_MUTED }}>
+            End-to-end hiring intelligence across every open role
+          </p>
         </div>
+
+        <a href="/jd-generator" className="btn-primary shrink-0">
+          <Plus className="w-4 h-4" />
+          Create New Role
+        </a>
       </div>
 
       {/* ════════════════════════════════════════════════════════════════
-          STAT CARDS — gradient icons, animated numbers, hover link
+          METRIC STRIP — one quiet surface, four linked columns
       ════════════════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {STAT_META.map((s, i) => (
-          <div
+      <div
+        className="grid grid-cols-2 md:grid-cols-4 md:divide-x divide-[#f0f1f5] bg-white rounded-2xl overflow-hidden animate-fade-in-up"
+        style={{ border: `1px solid ${C.BORDER}` }}
+      >
+        {STAT_META.map((s) => (
+          <a
             key={s.key}
-            className="card group animate-fade-in-up"
-            style={{ animationDelay: `${i * 55}ms` }}
+            href={s.link}
+            className="group block px-5 py-5 transition-colors duration-150 hover:bg-[#f7f8fc]"
+            style={{ textDecoration: 'none' }}
           >
-            {/* Icon + hover link row */}
-            <div className="flex items-start justify-between mb-5">
-              <div
-                className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: s.gradient, boxShadow: s.glow }}
-              >
-                <s.icon className="w-5 h-5 text-white" />
-              </div>
-              <a
-                href={s.link}
-                className="opacity-0 group-hover:opacity-100 transition-all duration-150 p-1.5 rounded-lg"
+            <div className="flex items-start justify-between gap-2">
+              <p className="font-display text-3xl font-semibold tabular-nums leading-none" style={{ color: C.TEXT }}>
+                <AnimatedNumber target={statValues[s.key]} />
+              </p>
+              <ArrowUpRight
+                className="w-3.5 h-3.5 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 shrink-0"
                 style={{ color: C.TEXT_MUTED }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = C.DIVIDER }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent' }}
-              >
-                <ArrowUpRight className="w-4 h-4" />
-              </a>
+              />
             </div>
-
-            {/* Value */}
-            <p className="text-4xl font-black tabular-nums leading-none" style={{ color: C.TEXT }}>
-              <AnimatedNumber target={statValues[s.key]} />
-            </p>
-
-            {/* Label */}
-            <p className="text-sm font-medium mt-1.5" style={{ color: C.TEXT_MUTED }}>{s.label}</p>
-
-          </div>
+            <p className="text-xs mt-2" style={{ color: C.TEXT_MUTED }}>{s.label}</p>
+          </a>
         ))}
       </div>
 
       {/* ════════════════════════════════════════════════════════════════
-          PIPELINE — connected flow, gradient accents, step badges
+          PIPELINE — numbered flow line, no boxes
       ════════════════════════════════════════════════════════════════ */}
       <div className="card animate-fade-in-up" style={{ animationDelay: '80ms' }}>
         <div className="flex items-center justify-between mb-5">
@@ -402,66 +305,37 @@ export default function DashboardPage() {
           <span className="badge-primary">4 stages</span>
         </div>
 
-        {/* Flow */}
-        <div className="flex items-stretch">
+        {/* Flow line: wraps to 2-col grid below md, single row above */}
+        <div className="grid grid-cols-2 gap-x-4 gap-y-3 md:flex md:items-center md:gap-0">
           {PIPELINE.flatMap((item, i) => {
-            const card = (
+            const step = (
               <a
                 key={`step-${item.step}`}
                 href={item.link}
-                className="flex-1 block group transition-all duration-200 hover:-translate-y-1"
+                className="group flex items-center gap-2 min-w-0 md:flex-1"
                 style={{ textDecoration: 'none' }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget as HTMLElement
-                  el.style.filter = 'drop-shadow(0 6px 16px rgba(5,7,102,0.14))'
-                }}
-                onMouseLeave={(e) => {
-                  ;(e.currentTarget as HTMLElement).style.filter = 'none'
-                }}
               >
-                <div
-                  className="h-full rounded-xl p-4 flex flex-col"
-                  style={{ background: '#fff', border: `1px solid ${C.BORDER}` }}
-                >
-                  {/* Gradient top bar */}
-                  <div
-                    className="h-[3px] rounded-full mb-4 w-full"
-                    style={{ background: item.topBar }}
-                  />
-
-                  {/* Step badge */}
-                  <div
-                    className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold text-white mb-3 shrink-0"
-                    style={{ background: item.accent }}
-                  >
-                    {item.step}
-                  </div>
-
-                  {/* Icon */}
-                  <item.icon className="w-5 h-5 mb-3" style={{ color: item.iconColor }} />
-
-                  {/* Text */}
-                  <p className="text-sm font-bold mb-1 leading-snug" style={{ color: C.TEXT }}>
-                    {item.label}
-                  </p>
-                  <p className="text-xs leading-snug" style={{ color: C.TEXT_MUTED }}>
-                    {item.desc}
-                  </p>
-                </div>
+                <span className="font-display text-xs tabular-nums shrink-0" style={{ color: C.TEXT_SUBTLE }}>
+                  {String(item.step).padStart(2, '0')}
+                </span>
+                <span className="text-sm font-medium truncate text-[#0F1640] group-hover:text-[#050766] transition-colors duration-150">
+                  {item.label}
+                </span>
+                <span className="hidden xl:inline text-xs truncate" style={{ color: C.TEXT_MUTED }}>
+                  {item.desc}
+                </span>
               </a>
             )
 
             const arrow = i < PIPELINE.length - 1 ? (
-              <div
+              <ChevronRight
                 key={`arrow-${i}`}
-                className="flex items-center justify-center px-1 shrink-0"
-                style={{ width: 24 }}
-              >
-                <ChevronRight className="w-4 h-4" style={{ color: C.TEXT_SUBTLE }} />
-              </div>
+                className="hidden md:block w-4 h-4 mx-2 shrink-0"
+                style={{ color: C.TEXT_SUBTLE }}
+              />
             ) : null
 
-            return arrow ? [card, arrow] : [card]
+            return arrow ? [step, arrow] : [step]
           })}
         </div>
       </div>
@@ -495,20 +369,18 @@ export default function DashboardPage() {
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLElement
                 el.style.transform = 'translateY(-3px)'
-                el.style.boxShadow = '0 6px 20px rgba(5,7,102,0.10)'
                 el.style.borderColor = C.LAPIS
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLElement
                 el.style.transform = ''
-                el.style.boxShadow = ''
                 el.style.borderColor = C.BORDER
               }}
             >
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                     style={{ background: C.GRAD_JD }}>
-                  <TrendingUp className="w-4 h-4 text-white" />
+                     style={{ backgroundColor: C.PRIMARY_LIGHT, border: `1px solid ${C.BORDER}` }}>
+                  <TrendingUp className="w-4 h-4" style={{ color: C.LAPIS }} />
                 </div>
                 <div>
                   <p className="text-sm font-bold" style={{ color: C.TEXT }}>Candidate Pipeline</p>
@@ -558,20 +430,18 @@ export default function DashboardPage() {
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLElement
                 el.style.transform = 'translateY(-3px)'
-                el.style.boxShadow = '0 6px 20px rgba(137,57,161,0.10)'
-                el.style.borderColor = C.PURPLE
+                el.style.borderColor = C.LAPIS
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLElement
                 el.style.transform = ''
-                el.style.boxShadow = ''
                 el.style.borderColor = C.BORDER
               }}
             >
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                     style={{ background: C.GRAD_SCREEN }}>
-                  <Trophy className="w-4 h-4 text-white" />
+                     style={{ backgroundColor: C.PRIMARY_LIGHT, border: `1px solid ${C.BORDER}` }}>
+                  <Trophy className="w-4 h-4" style={{ color: C.LAPIS }} />
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-bold" style={{ color: C.TEXT }}>Top Candidates</p>
@@ -624,20 +494,18 @@ export default function DashboardPage() {
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLElement
                 el.style.transform = 'translateY(-3px)'
-                el.style.boxShadow = '0 6px 20px rgba(19,62,73,0.10)'
-                el.style.borderColor = C.TEAL
+                el.style.borderColor = C.LAPIS
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLElement
                 el.style.transform = ''
-                el.style.boxShadow = ''
                 el.style.borderColor = C.BORDER
               }}
             >
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                     style={{ background: C.GRAD_GUIDE }}>
-                  <Zap className="w-4 h-4 text-white" />
+                     style={{ backgroundColor: C.PRIMARY_LIGHT, border: `1px solid ${C.BORDER}` }}>
+                  <Zap className="w-4 h-4" style={{ color: C.LAPIS }} />
                 </div>
                 <div>
                   <p className="text-sm font-bold" style={{ color: C.TEXT }}>AI Insights</p>
@@ -656,7 +524,7 @@ export default function DashboardPage() {
                     <span className="text-xs" style={{ color: C.TEXT_MUTED }}>{row.label}</span>
                     <span className="text-xs font-bold tabular-nums px-2 py-0.5 rounded-md"
                           style={{ color: row.accent, backgroundColor: C.PRIMARY_LIGHT }}>
-                      {row.show ? <><AnimatedNumber target={row.num} />{row.suffix}</> : '—'}
+                      {row.show ? <><AnimatedNumber target={row.num} />{row.suffix}</> : '–'}
                     </span>
                   </div>
                 ))}
@@ -666,13 +534,13 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs" style={{ color: C.TEXT_MUTED }}>Avg match vs. ideal</span>
                   <span className="text-xs font-bold" style={{ color: avgScore >= 65 ? C.SUCCESS : C.WARNING }}>
-                    {avgScore > 0 ? <><AnimatedNumber target={avgScore} />%</> : '—'}
+                    {avgScore > 0 ? <><AnimatedNumber target={avgScore} />%</> : '–'}
                   </span>
                 </div>
                 <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: C.DIVIDER }}>
                   <div
                     className="h-full rounded-full transition-all duration-700"
-                    style={{ width: `${avgScore}%`, background: avgScore >= 65 ? C.GRAD_JD : C.GRAD_COMMS }}
+                    style={{ width: `${avgScore}%`, backgroundColor: avgScore >= 65 ? C.SUCCESS : C.WARNING }}
                   />
                 </div>
               </div>
@@ -689,20 +557,18 @@ export default function DashboardPage() {
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLElement
                 el.style.transform = 'translateY(-3px)'
-                el.style.boxShadow = '0 6px 20px rgba(212,47,123,0.10)'
-                el.style.borderColor = C.PINK
+                el.style.borderColor = C.LAPIS
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLElement
                 el.style.transform = ''
-                el.style.boxShadow = ''
                 el.style.borderColor = C.BORDER
               }}
             >
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                     style={{ background: C.GRAD_COMMS }}>
-                  <BarChart2 className="w-4 h-4 text-white" />
+                     style={{ backgroundColor: C.PRIMARY_LIGHT, border: `1px solid ${C.BORDER}` }}>
+                  <BarChart2 className="w-4 h-4" style={{ color: C.LAPIS }} />
                 </div>
                 <div>
                   <p className="text-sm font-bold" style={{ color: C.TEXT }}>Recruitment Metrics</p>
@@ -827,7 +693,6 @@ export default function DashboardPage() {
                   const shortlisted   = jobEvals?.filter(e => e.matchPercentage >= 65).length ?? 0
                   const avgMatch      = evalCount > 0 ? Math.round(jobEvals!.reduce((s, e) => s + e.matchPercentage, 0) / evalCount) : 0
                   const hasGuide      = guideByJobId[job.id] ?? false
-                  const accent        = statusAccent(job.status)
                   const isSelected    = selectedJD?.id === job.id
                   const matchColor    = avgMatch >= 65 ? C.SUCCESS_TEXT : avgMatch > 0 ? C.RED : C.TEXT_SUBTLE
 
@@ -859,9 +724,6 @@ export default function DashboardPage() {
                         }
                       }}
                     >
-                      {/* 4px accent strip */}
-                      <div style={{ width: 4, flexShrink: 0, backgroundColor: accent }} />
-
                       {/* Content */}
                       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px 8px', gap: 4, minWidth: 0 }}>
 
@@ -871,7 +733,7 @@ export default function DashboardPage() {
                             {isDeletingC ? <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: C.RED }} /> : (
                               <>
                                 <span style={{ fontSize: 11, color: C.TEXT_MUTED }}>Delete this role?</span>
-                                <button style={{ fontSize: 11, padding: '3px 8px', borderRadius: 6, fontWeight: 600, color: '#fff', background: C.GRAD_DELETE, border: 'none', cursor: 'pointer' }} onClick={() => deleteMutation.mutate(job.id)}>Confirm</button>
+                                <button style={{ fontSize: 11, padding: '3px 8px', borderRadius: 6, fontWeight: 600, color: '#fff', backgroundColor: C.RED, border: 'none', cursor: 'pointer' }} onClick={() => deleteMutation.mutate(job.id)}>Confirm</button>
                                 <button style={{ fontSize: 11, padding: '3px 8px', borderRadius: 6, fontWeight: 600, color: C.TEXT_MUTED, background: 'transparent', border: `1px solid ${C.BORDER}`, cursor: 'pointer' }} onClick={() => setConfirmingDeleteId(null)}>Cancel</button>
                               </>
                             )}
@@ -899,9 +761,9 @@ export default function DashboardPage() {
                             {/* Right: stats + delete */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
                               {[
-                                { val: evalCount > 0 ? String(evalCount) : '—', col: evalCount > 0 ? '#8939A1' : C.TEXT_MUTED, lbl: 'Screened' },
-                                { val: evalCount > 0 ? String(shortlisted) : '—', col: evalCount > 0 ? C.LAPIS : C.TEXT_MUTED, lbl: 'Shortlisted' },
-                                { val: avgMatch > 0 ? `${avgMatch}%` : '—', col: avgMatch > 0 ? matchColor : C.TEXT_MUTED, lbl: 'Match' },
+                                { val: evalCount > 0 ? String(evalCount) : '–', col: evalCount > 0 ? '#8939A1' : C.TEXT_MUTED, lbl: 'Screened' },
+                                { val: evalCount > 0 ? String(shortlisted) : '–', col: evalCount > 0 ? C.LAPIS : C.TEXT_MUTED, lbl: 'Shortlisted' },
+                                { val: avgMatch > 0 ? `${avgMatch}%` : '–', col: avgMatch > 0 ? matchColor : C.TEXT_MUTED, lbl: 'Match' },
                               ].map((s, i) => (
                                 <React.Fragment key={s.lbl}>
                                   {i > 0 && <div style={{ width: 1, height: 22, backgroundColor: C.BORDER, flexShrink: 0 }} />}
@@ -976,7 +838,6 @@ export default function DashboardPage() {
                   .priority-actions-scroll::-webkit-scrollbar-thumb:hover { background: ${C.LAPIS}; }
                 `}</style>
                 {(priorityActions as PriorityAction[]).map((action, idx) => {
-                  const borderColor = action.priority === 'high' ? C.RED : action.priority === 'medium' ? C.LAPIS : C.WARNING
                   const badgeStyle: React.CSSProperties = action.priority === 'high'
                     ? { backgroundColor: '#fce8e9', color: C.RED }
                     : action.priority === 'medium'
@@ -1010,11 +871,8 @@ export default function DashboardPage() {
                     <div
                       key={idx}
                       style={{
-                        borderLeft: `4px solid ${borderColor}`,
                         borderRadius: 8,
                         border: `1px solid ${C.BORDER}`,
-                        borderLeftWidth: 4,
-                        borderLeftColor: borderColor,
                         padding: '10px 12px',
                         backgroundColor: '#fff',
                       }}
@@ -1148,7 +1006,7 @@ export default function DashboardPage() {
           {interestData.recentInterested.length > 0 ? (
             <>
               <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: C.TEXT_SUBTLE }}>
-                Recently Responded — Interested
+                Recently Responded · Interested
               </p>
               <div className="space-y-2">
                 {interestData.recentInterested.map((c) => (
@@ -1159,9 +1017,9 @@ export default function DashboardPage() {
                   >
                     <div
                       className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
-                      style={{ background: C.GRAD_JD }}
+                      style={{ backgroundColor: C.PRIMARY_LIGHT, border: `1px solid ${C.BORDER}` }}
                     >
-                      <UserCheck className="w-3.5 h-3.5 text-white" />
+                      <UserCheck className="w-3.5 h-3.5" style={{ color: C.LAPIS }} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold truncate" style={{ color: C.TEXT }}>
@@ -1199,9 +1057,9 @@ export default function DashboardPage() {
         <div className="card text-center py-16 animate-fade-in">
           <div
             className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-            style={{ background: 'linear-gradient(135deg, #1B1F4E, #7B2D8E)', boxShadow: '0 6px 20px rgba(123,45,142,0.35)' }}
+            style={{ backgroundColor: C.PRIMARY_LIGHT, border: `1px solid ${C.BORDER}` }}
           >
-            <FileText className="w-7 h-7 text-white" />
+            <FileText className="w-7 h-7" style={{ color: C.LAPIS }} />
           </div>
           <p className="font-bold text-base mb-1.5" style={{ color: C.TEXT }}>
             No job descriptions yet
@@ -1209,7 +1067,7 @@ export default function DashboardPage() {
           <p className="text-sm mb-6" style={{ color: C.TEXT_MUTED }}>
             Generate your first AI-powered JD to get started
           </p>
-          <a href="/jd-generator" className="btn-gradient">
+          <a href="/jd-generator" className="btn-primary">
             <Plus className="w-4 h-4" />
             Generate your first JD
           </a>
