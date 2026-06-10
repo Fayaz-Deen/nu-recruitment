@@ -1,0 +1,320 @@
+/* =============================================================================
+   NULogic — Global stylesheet
+   Entry point imported once in main.tsx.
+
+   Import order:
+     1. brand.css  — all CSS custom properties (swap this file to re-brand)
+     2. Tailwind   — reset, components, utilities
+     3. Keyframes  — animation definitions
+     4. Base       — body defaults
+     5. Components — shared UI classes (card, btn, input, badge, etc.)
+     6. print.css  — print / export styles
+============================================================================= */
+
+/* Imports must precede all other rules */
+@import './styles/brand.css';
+@import './styles/print.css';
+
+/* 2. Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── 3. Keyframes ─────────────────────────────────────────────────────────── */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+/* Signature entrance: a decisive rise with the brand's out-expo voice. */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(10px) scale(0.995); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);     }
+}
+
+/* CTA sheen — a single light sweep across primary buttons on hover. */
+@keyframes sheen {
+  from { transform: translateX(-130%) skewX(-18deg); }
+  to   { transform: translateX(230%)  skewX(-18deg); }
+}
+
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.92); }
+  70%  { transform: scale(1.015); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ── 4. Base ──────────────────────────────────────────────────────────────── */
+
+@layer base {
+  body {
+    background-color: var(--brand-bg);
+    color: var(--brand-text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Display voice: Sora carries the hierarchy; tight tracking keeps it calm. */
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  /* Visible, on-brand keyboard focus everywhere — never the UA default ring. */
+  :focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+/* ── 5. Components ────────────────────────────────────────────────────────── */
+
+@layer components {
+
+  /* Card ─────────────────────────────────────────────────────────────────── */
+  .card {
+    @apply bg-white rounded-2xl shadow-sm p-6 transition-shadow duration-200;
+    border: 1px solid var(--brand-border);
+  }
+
+  .card-interactive {
+    @apply card cursor-pointer;
+    transition:
+      box-shadow   var(--motion-normal) var(--ease-out-expo),
+      transform    var(--motion-normal) var(--ease-out-expo),
+      border-color var(--motion-normal) var(--ease-standard);
+  }
+  .card-interactive:hover {
+    box-shadow: 0 8px 24px -6px var(--brand-primary-shadow);
+    border-color: var(--brand-primary-ring);
+    transform: translateY(-3px);
+  }
+  .card-interactive:active {
+    transform: translateY(-1px);
+    transition-duration: var(--motion-fast);
+  }
+
+  /* Buttons ──────────────────────────────────────────────────────────────── */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm;
+    @apply transition-all duration-150;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    background-color: var(--brand-primary);
+    color: #ffffff;
+    box-shadow: 0 1px 4px 0 var(--brand-primary-shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  /* Sheen sweep — the one flourish primary CTAs are allowed. */
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+    transform: translateX(-130%) skewX(-18deg);
+    pointer-events: none;
+  }
+  .btn-primary:hover:not(:disabled)::after {
+    animation: sheen 0.7s var(--ease-out-expo);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background-color: var(--brand-primary-dark);
+    box-shadow: 0 4px 14px -2px var(--brand-primary-shadow);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active:not(:disabled) {
+    transform: scale(0.95) translateY(0);
+  }
+  .btn-primary:disabled {
+    transform: none !important;
+    box-shadow: 0 1px 4px 0 var(--brand-primary-shadow) !important;
+  }
+
+  .btn-gradient {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-semibold text-sm;
+    @apply transition-all duration-200;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    background: var(--nu-grad-primary);
+    box-shadow: 0 4px 16px rgba(212, 47, 123, 0.32);
+  }
+  .btn-gradient:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 22px rgba(212, 47, 123, 0.45);
+  }
+  .btn-gradient:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm bg-white;
+    @apply transition-all duration-150;
+    border: 1px solid var(--brand-border);
+    color: var(--brand-text);
+  }
+  .btn-secondary:hover {
+    background-color: var(--brand-primary-light);
+    border-color: var(--brand-primary-ring);
+    color: var(--brand-primary);
+    transform: translateY(-1px);
+  }
+  .btn-secondary:active {
+    transform: scale(0.95);
+  }
+
+  /* Input ────────────────────────────────────────────────────────────────── */
+  .input {
+    @apply w-full px-3 py-2.5 rounded-xl text-sm bg-white transition-all duration-150;
+    border: 1px solid var(--brand-border);
+    color: var(--brand-text);
+  }
+  .input::placeholder {
+    color: var(--brand-text-muted);
+    opacity: 0.65;
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px var(--brand-primary-ring);
+  }
+
+  /* Label ────────────────────────────────────────────────────────────────── */
+  .label {
+    @apply block text-sm font-semibold mb-1.5;
+    color: var(--brand-text);
+  }
+
+  /* Animations ───────────────────────────────────────────────────────────── */
+  .animate-fade-in-up      { animation: fadeInUp      0.4s  ease-out both; }
+  .animate-fade-in         { animation: fadeIn        0.3s  ease-out both; }
+  .animate-scale-in        { animation: scaleIn       0.25s ease-out both; }
+  .animate-slide-in-right  { animation: slideInRight  0.35s ease-out both; }
+  .animate-pop-in          { animation: popIn 0.3s var(--ease-spring) both; }
+
+  /* Route-level entrance — applied to the page wrapper on navigation. */
+  .page-enter {
+    animation: pageEnter var(--motion-slow) var(--ease-out-expo) both;
+  }
+
+  /* Staggered children: cards and list rows rise in sequence, 45ms apart.
+     Cap at 12 — anything later arrives with the last wave. */
+  .stagger-children > * {
+    animation: fadeInUp var(--motion-slow) var(--ease-out-expo) both;
+  }
+  .stagger-children > *:nth-child(1)  { animation-delay: 0ms; }
+  .stagger-children > *:nth-child(2)  { animation-delay: 45ms; }
+  .stagger-children > *:nth-child(3)  { animation-delay: 90ms; }
+  .stagger-children > *:nth-child(4)  { animation-delay: 135ms; }
+  .stagger-children > *:nth-child(5)  { animation-delay: 180ms; }
+  .stagger-children > *:nth-child(6)  { animation-delay: 225ms; }
+  .stagger-children > *:nth-child(7)  { animation-delay: 270ms; }
+  .stagger-children > *:nth-child(8)  { animation-delay: 315ms; }
+  .stagger-children > *:nth-child(9)  { animation-delay: 360ms; }
+  .stagger-children > *:nth-child(10) { animation-delay: 405ms; }
+  .stagger-children > *:nth-child(11) { animation-delay: 450ms; }
+  .stagger-children > *:nth-child(n+12) { animation-delay: 495ms; }
+
+  /* Subtle row hover for tables/lists — background + indent, no layout shift. */
+  .row-hover {
+    transition: background-color var(--motion-fast) var(--ease-standard);
+  }
+  .row-hover:hover {
+    background-color: var(--brand-row-hover);
+  }
+
+  /* Shimmer ──────────────────────────────────────────────────────────────── */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--brand-skeleton) 25%,
+      #e0e1ed            50%,
+      var(--brand-skeleton) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+
+  /* Badges ───────────────────────────────────────────────────────────────── */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+
+  .badge-primary,
+  .badge-blue {
+    @apply badge;
+    background-color: var(--brand-primary-light);
+    color: var(--brand-primary);
+  }
+
+  .badge-green {
+    @apply badge;
+    background-color: var(--brand-success-light);
+    color: var(--brand-success);
+  }
+
+  .badge-yellow {
+    @apply badge;
+    background-color: var(--brand-warning-light);
+    color: var(--brand-warning);
+  }
+
+  .badge-red {
+    @apply badge;
+    background-color: var(--brand-accent-light);
+    color: var(--brand-accent);
+  }
+
+  .badge-purple {
+    @apply badge;
+    background-color: #f0eefa;
+    color: #5b21b6;
+  }
+
+  .badge-gray {
+    @apply badge bg-gray-100 text-gray-500;
+  }
+
+  /* Section label ────────────────────────────────────────────────────────── */
+  .section-label {
+    @apply text-xs font-bold uppercase tracking-widest;
+    color: var(--brand-text-muted);
+  }
+}
+
+/* ── 6. Reduced motion ────────────────────────────────────────────────────────
+   Respect the OS setting: collapse every animation/transition to its final
+   state. Placed last so it wins the cascade over all component rules. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

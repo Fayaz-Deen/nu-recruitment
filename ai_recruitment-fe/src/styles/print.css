@@ -1,0 +1,185 @@
+/* =============================================================================
+   NULogic — Print stylesheet
+   All colors reference brand.css CSS variables — no hardcoded hex values.
+   Only the #print-area is shown; the .print-target class marks the specific
+   guide card being printed.
+============================================================================= */
+
+/* ── Screen: hide print-only elements ─────────────────────────────────────── */
+.print-header { display: none; }
+.print-only   { display: none; }
+
+/* ── @media print ─────────────────────────────────────────────────────────── */
+@media print {
+
+  @page {
+    size: A4 portrait;
+    margin: 16mm 18mm;
+  }
+
+  /* 1. Blank out the entire page */
+  body * {
+    visibility: hidden;
+  }
+
+  /* 2. Reveal only the print area */
+  #print-area,
+  #print-area * {
+    visibility: visible;
+  }
+
+  /* 3. Anchor print area to top-left */
+  #print-area {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  /* 4. Branded header ───────────────────────────────────────────────────── */
+  .print-header {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--brand-primary);
+    page-break-inside: avoid;
+  }
+
+  .print-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .print-logo-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: var(--brand-primary);
+    color: #fff;
+    font-weight: 800;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print-logo-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--brand-primary);
+    letter-spacing: -0.3px;
+    line-height: 1;
+  }
+
+  .print-logo-tag {
+    font-size: 9px;
+    color: var(--brand-text-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .print-header-meta {
+    text-align: right;
+  }
+
+  .print-header-meta .print-doc-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--brand-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .print-header-meta .print-doc-date {
+    font-size: 9px;
+    color: var(--brand-text-muted);
+    margin-top: 2px;
+  }
+
+  /* 5. Hide all guide cards that are NOT the target ─────────────────────── */
+  .guide-card:not(.print-target) {
+    display: none !important;
+  }
+
+  /* 6. Hide the "Generated Guides" screen heading ──────────────────────── */
+  .print-section-heading {
+    display: none !important;
+  }
+
+  /* 7. Guide card: remove chrome ───────────────────────────────────────── */
+  .guide-card {
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  /* 8. Hide toggle chevron ─────────────────────────────────────────────── */
+  .guide-toggle-btn .guide-chevron {
+    display: none !important;
+  }
+
+  /* 9. Guide body: always visible for print ────────────────────────────── */
+  .guide-body {
+    display: block !important;
+    visibility: visible !important;
+    border-top: 1px solid var(--brand-border) !important;
+  }
+
+  /* 10. Hide action buttons ────────────────────────────────────────────── */
+  .guide-actions {
+    display: none !important;
+  }
+
+  /* 11. Table borders ──────────────────────────────────────────────────── */
+  .print-target table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  .print-target th,
+  .print-target td {
+    border: 1px solid var(--brand-border-strong) !important;
+    padding: 7px 10px !important;
+  }
+
+  .print-target thead tr {
+    background-color: var(--brand-primary-light) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 12. Red flags ──────────────────────────────────────────────────────── */
+  .print-target .print-red-flag {
+    color: var(--brand-accent) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 13. Section labels ─────────────────────────────────────────────────── */
+  .print-target .section-label {
+    border-bottom: 1px solid var(--brand-border);
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+  }
+
+  /* 14. Page-break hints ───────────────────────────────────────────────── */
+  .print-target section {
+    page-break-inside: avoid;
+  }
+
+  /* 15. Strip animations / shadows ─────────────────────────────────────── */
+  * {
+    animation: none !important;
+    transition: none !important;
+    box-shadow: none !important;
+  }
+}

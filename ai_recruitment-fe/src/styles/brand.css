@@ -1,0 +1,81 @@
+/* =============================================================================
+   NULogic Brand Tokens — CSS Custom Properties
+   Single source of truth for all brand colors used in CSS/Tailwind.
+
+   To re-brand: edit ONLY this file. Every component class, badge, button,
+   input, and print style that references var(--brand-*) updates automatically.
+
+   TypeScript counterpart: src/tokens.ts  (used for inline style={} props)
+   Keep both files in sync when adding new tokens.
+============================================================================= */
+
+:root {
+
+  /* ── NULogic core palette ──────────────────────────────────────────────── */
+  --nu-lapis:          #050766;
+  --nu-navy:           #25255C;
+  --nu-red:            #E62A32;
+  --nu-purple:         #8939A1;
+  --nu-teal:           #133E49;
+  --nu-near-white:     #F4F5F6;
+  --nu-coral:          #EE777C;
+  --nu-light-purple:   #B17DC1;
+  --nu-indigo:         #61629D;
+
+  /* ── Brand gradients ───────────────────────────────────────────────────── */
+  --nu-grad-primary:   linear-gradient(135deg, #D42F7B, #E8623A);
+  --nu-grad-dark:      linear-gradient(135deg, #1B1F4E, #7B2D8E);
+  --nu-grad-brand:     linear-gradient(to right, #ED3027, #7B469B);
+
+  /* ── Semantic — primary ────────────────────────────────────────────────── */
+  --brand-primary:        #050766;
+  --brand-primary-dark:   #25255C;
+  --brand-primary-light:  #eef0fa;
+  --brand-primary-ring:   rgba(5, 7, 102, 0.12);
+  --brand-primary-shadow: rgba(5, 7, 102, 0.22);
+
+  /* ── Semantic — accent / error ─────────────────────────────────────────── */
+  --brand-accent:         #E62A32;
+  --brand-accent-light:   #fce8e9;
+  --brand-accent-border:  #f5c2c4;
+
+  /* ── Semantic — success ────────────────────────────────────────────────── */
+  --brand-success:        #1F9E6C;
+  --brand-success-light:  #e6f7f0;
+  --brand-success-border: #b3e6d4;
+  --brand-success-text:   #155c3e;
+
+  /* ── Semantic — warning ────────────────────────────────────────────────── */
+  --brand-warning:        #C77A12;
+  --brand-warning-light:  #fef3e1;
+  --brand-warning-border: #f5d9a0;
+
+  /* ── Typography ────────────────────────────────────────────────────────── */
+  --brand-text:           #0F1640;
+  --brand-text-muted:     #5A5F7A;
+  --brand-text-subtle:    #c0c2d4;
+
+  /* ── Surfaces ──────────────────────────────────────────────────────────── */
+  --brand-bg:             #F4F5F6;
+  --brand-card:           #FFFFFF;
+  --brand-border:         #e4e5ec;
+  --brand-border-strong:  #d0d2df;
+  --brand-divider:        #f0f1f5;
+  --brand-row-hover:      #f7f8fc;
+  --brand-skeleton:       #edeef5;
+  --brand-neutral:        #f0f0f2;
+
+  /* ── Typography families ───────────────────────────────────────────────── */
+  --font-display: 'Sora', 'Avenir Next', system-ui, sans-serif;
+  --font-body:    'Instrument Sans', 'Helvetica Neue', system-ui, sans-serif;
+
+  /* ── Motion system ─────────────────────────────────────────────────────────
+     One easing voice across the app: decisive out-expo for entrances,
+     standard for hovers. Durations stay short — this UI is a tool. */
+  --motion-fast:     140ms;
+  --motion-normal:   240ms;
+  --motion-slow:     420ms;
+  --ease-out-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:     cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-standard:   cubic-bezier(0.4, 0, 0.2, 1);
+}
