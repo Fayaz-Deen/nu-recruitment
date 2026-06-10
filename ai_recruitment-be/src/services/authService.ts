@@ -10,10 +10,12 @@ if (!process.env.JWT_SECRET) {
 }
 
 // Fail fast on a malformed expiry instead of silently signing tokens with
-// whatever string happens to be in the environment.
+// whatever string happens to be in the environment. Pattern mirrors the `ms`
+// grammar jsonwebtoken accepts (bare seconds, or number + unit incl. long forms).
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN ?? '15m';
-if (!/^\d+(ms|s|m|h|d)?$/.test(JWT_EXPIRES_IN)) {
-  throw new Error(`Invalid JWT_EXPIRES_IN "${JWT_EXPIRES_IN}" — expected formats like "900", "15m", "1h"`);
+const MS_GRAMMAR = /^\d+(\.\d+)?\s*(ms|msecs?|milliseconds?|s|secs?|seconds?|m|mins?|minutes?|h|hrs?|hours?|d|days?|w|weeks?|y|yrs?|years?)?$/i;
+if (!MS_GRAMMAR.test(JWT_EXPIRES_IN.trim())) {
+  throw new Error(`Invalid JWT_EXPIRES_IN "${JWT_EXPIRES_IN}" — expected formats like "900", "15m", "1h", "7 days"`);
 }
 
 export interface JWTPayload {

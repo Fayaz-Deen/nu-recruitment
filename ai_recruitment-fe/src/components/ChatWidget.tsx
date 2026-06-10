@@ -164,7 +164,13 @@ function MessageBubble({ msg }: { msg: ChatMsg }) {
             style={{ border: `1px solid ${C.BORDER}`, color: C.TEXT }}
           >
             {msg.content ? (
-              <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(renderMarkdown(msg.content)) }} />
+              <div
+                // style attr is safe to allow: escapeHtml ran before the markdown
+                // transforms, so every style attribute here is renderer-generated.
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(renderMarkdown(msg.content), { ADD_ATTR: ['style'] }),
+                }}
+              />
             ) : (
               <span className="flex items-center gap-1.5" style={{ color: C.TEXT_MUTED }}>
                 <span className="inline-flex gap-0.5">

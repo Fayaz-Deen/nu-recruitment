@@ -11,6 +11,37 @@ Severity: 🔴 Blocker (fix before go-live) · 🟠 High (fix before scale) · �
 
 ---
 
+## Status update — 2026-06-11 (branch `feature/production-readiness` in both repos)
+
+Both apps were already GitHub repos; work is committed on `feature/production-readiness`
+(BE commits `89e322f`, `e0e9…`; FE commits `2ebb2fe`, `ecb539d`, `ef050d2`).
+
+**Resolved ✔** — S1 (DOMPurify on both `dangerouslySetInnerHTML` sites + HTML-escape before markdown),
+S2 (10/15min limiter on login/forgot/reset/accept-invite, 60/15min on refresh),
+S3 (SMTP credentials no longer logged), S8 (JWT_EXPIRES_IN validated, full ms grammar),
+O1 (graceful shutdown: SIGTERM/SIGINT drain server → worker → Redis → pg pool),
+O3 (reminder worker fails closed without Redis; `REMINDER_ALLOW_NO_REDIS=true` opt-out;
+per-cycle ownership-checked leader election), O5 (`/health/ready` with cached DB probe),
+C1 (`PATCH /users/me` + `POST /users/me/password` implemented and wired; password change
+revokes other sessions), C2 (zod validation on resume upload/screen/check-interest,
+interview generate, schedule init, chat stream), F1 (root + per-page ErrorBoundary),
+F5 (`getApiErrorMessage` utility, all 8 cast sites replaced), F7 (`workflow.js` deleted,
+README-2 → `docs/PROJECT_OVERVIEW.md`), F8 (`noUnusedLocals`/`noUnusedParameters` on, fallout fixed).
+
+**Partially resolved ◐** — O2: uploaded resume files are now deleted on every exit path
+(parsed text lives in Postgres); proper object storage (S3/GCS) still recommended.
+S9: PII resumes still in `be/uploads/` locally (gitignored, never committed) — safe to purge.
+
+**Also shipped** — design/motion system: Sora + Instrument Sans pairing, motion tokens,
+route entrance + staggered grids, CTA sheen, focus-visible rings, full
+`prefers-reduced-motion` support (CSS + JS counters).
+
+**Still open** — S4 (CSRF), S5 (password policy), S6/S7 (PII in logs, prompt-injection
+hardening), O4 (async email queue), O6 (request logging), O7 (migration renumbering),
+O8 (Sentry/metrics), C3–C7, F2–F4, F6, E1 (tests), E3 (ESLint/Prettier), E4 (env validation).
+
+---
+
 ## 1. Security
 
 | # | Sev | Issue | Where | Definition of Done |

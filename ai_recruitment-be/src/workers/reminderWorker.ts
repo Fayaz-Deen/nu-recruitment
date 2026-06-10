@@ -259,7 +259,12 @@ async function acquireLock(): Promise<boolean> {
 }
 
 async function refreshLock(): Promise<void> {
-  try { await redisClient.expire(LOCK_KEY, LOCK_TTL); } catch { /* ignore */ }
+  // EXPIRE renews whatever value the key holds — only renew if it's still ours,
+  // otherwise we could extend a lock another instance now owns.
+  try {
+    const holder = await redisClient.get(LOCK_KEY);
+    if (holder === INSTANCE_ID) await redisClient.expire(LOCK_KEY, LOCK_TTL);
+  } catch { /* ignore — next acquireLock() handles Redis being down */ }
 }
 
 let workerTimer: NodeJS.Timeout | null = null;

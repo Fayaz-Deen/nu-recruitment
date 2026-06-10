@@ -33,6 +33,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors({
   origin: [
     process.env.FRONTEND_URL || 'https://nurecruit-fe.netlify.app',
+    'https://nu-recruitment.vercel.app',
     'http://localhost:5173',
     'http://localhost:5174',
   ],
@@ -59,18 +60,25 @@ const authLimiter = rateLimit({
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+// Cache the DB probe briefly so aggressive prober polling can't starve the pool.
+let lastDbCheck = { ok: true, at: 0 };
+const DB_CHECK_TTL_MS = 5_000;
 app.get('/health/ready', async (_req, res) => {
-  try {
-    await db.query('SELECT 1');
-    res.json({
-      status: 'ok',
-      db: 'up',
-      redis: redisClient.isReady ? 'up' : 'down',
-      timestamp: new Date().toISOString(),
-    });
-  } catch {
-    res.status(503).json({ status: 'degraded', db: 'down', redis: redisClient.isReady ? 'up' : 'down' });
+  if (Date.now() - lastDbCheck.at > DB_CHECK_TTL_MS) {
+    try {
+      await db.query('SELECT 1');
+      lastDbCheck = { ok: true, at: Date.now() };
+    } catch {
+      lastDbCheck = { ok: false, at: Date.now() };
+    }
   }
+  const body = {
+    status: lastDbCheck.ok ? 'ok' : 'degraded',
+    db: lastDbCheck.ok ? 'up' : 'down',
+    redis: redisClient.isReady ? 'up' : 'down',
+    timestamp: new Date().toISOString(),
+  };
+  res.status(lastDbCheck.ok ? 200 : 503).json(body);
 });
 
 // ── Public routes (no auth) ───────────────────────────────────────────────────
@@ -78,6 +86,13 @@ app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/forgot-password', authLimiter);
 app.use('/api/auth/reset-password', authLimiter);
 app.use('/api/auth/accept-invite', authLimiter);
+app.use('/api/auth/refresh', rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 60, // legit clients refresh every ~15min; 60 leaves headroom for retries
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: 'Too many refresh attempts.' },
+}));
 app.use('/api/auth', authRouter);
 app.use('/api/schedule', scheduleRouter);    // candidate-facing scheduling links are public
 app.use('/api/candidate', candidateRouter);  // candidate-facing interest checks are public

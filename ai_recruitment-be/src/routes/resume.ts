@@ -47,13 +47,28 @@ const uploadBodySchema = z.object({
   jobId: z.string().uuid('jobId must be a valid UUID').optional().or(z.literal('').transform(() => undefined)),
 });
 
+// Multer has already written files to disk by the time the handler runs, so
+// EVERY exit path (validation failure, parse error, success) must delete them.
+// The parsed text is persisted in Postgres; the raw file on local disk is
+// ephemeral on Railway and would otherwise accumulate PII forever.
+function removeUploadedFiles(files: Express.Multer.File[] | undefined): void {
+  for (const file of files ?? []) {
+    fs.promises.unlink(file.path).catch((unlinkErr) =>
+      logger.warn('Failed to remove uploaded file', {
+        file: file.filename,
+        error: unlinkErr instanceof Error ? unlinkErr.message : String(unlinkErr),
+      }),
+    );
+  }
+}
+
 // POST /api/resume/upload
 resumeRouter.post('/upload', upload.array('resumes', 100), async (req: Request, res: Response) => {
+  const files = req.files as Express.Multer.File[] | undefined;
   try {
-    const files = req.files as Express.Multer.File[];
-
     const parsedBody = uploadBodySchema.safeParse(req.body ?? {});
     if (!parsedBody.success) {
+      removeUploadedFiles(files);
       return res.status(400).json({ success: false, error: parsedBody.error.errors[0]?.message ?? 'Invalid jobId' });
     }
     const { jobId } = parsedBody.data;
@@ -64,19 +79,7 @@ resumeRouter.post('/upload', upload.array('resumes', 100), async (req: Request, 
 
     const parsed = await Promise.all(
       files.map(async (file) => {
-        let text: string;
-        try {
-          text = await parseResume(file.path);
-        } finally {
-          // The parsed text is persisted in Postgres; the raw file on local disk
-          // is ephemeral on Railway and would otherwise accumulate PII forever.
-          fs.promises.unlink(file.path).catch((unlinkErr) =>
-            logger.warn('Failed to remove uploaded file after parsing', {
-              file: file.filename,
-              error: unlinkErr instanceof Error ? unlinkErr.message : String(unlinkErr),
-            }),
-          );
-        }
+        const text = await parseResume(file.path);
         const candidateEmail = extractEmail(text);
 
         let cleanText: string;
@@ -146,8 +149,10 @@ resumeRouter.post('/upload', upload.array('resumes', 100), async (req: Request, 
       logger.warn('Duplicate detection skipped', { err: dupErr instanceof Error ? dupErr.message : String(dupErr) });
     }
 
+    removeUploadedFiles(files);
     res.json({ success: true, data: { count: parsed.length, candidates: parsed, duplicates } });
   } catch (error) {
+    removeUploadedFiles(files);
     logger.error('Upload failed', {
       error: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,

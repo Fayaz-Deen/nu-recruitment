@@ -201,6 +201,11 @@
     box-shadow: 0 0 0 3px var(--brand-primary-ring);
   }
 
+  /* Alias — several call sites use "input-field"; keep both names styled. */
+  .input-field {
+    @apply input;
+  }
+
   /* Label ────────────────────────────────────────────────────────────────── */
   .label {
     @apply block text-sm font-semibold mb-1.5;
