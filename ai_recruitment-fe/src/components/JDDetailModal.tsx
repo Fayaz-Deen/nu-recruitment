@@ -43,7 +43,13 @@ export default function JDDetailModal({ jd, onClose }: Props) {
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
       {/* Modal panel */}
-      <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl flex flex-col max-h-[82vh]">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={jd.title}
+        className="relative w-full max-w-2xl bg-white rounded-2xl flex flex-col max-h-[82vh]"
+        style={{ border: `1px solid ${C.BORDER}`, boxShadow: '0 20px 40px -15px rgba(0,0,0,0.08)' }}
+      >
 
         {/* Header */}
         <div
@@ -88,22 +94,22 @@ export default function JDDetailModal({ jd, onClose }: Props) {
           )}
           {jd.responsibilities?.length > 0 && (
             <Section title="Responsibilities">
-              <BulletList items={jd.responsibilities} bulletColor="#050766" />
+              <BulletList items={jd.responsibilities} bulletColor={C.LAPIS} />
             </Section>
           )}
           {jd.requiredQualifications?.length > 0 && (
             <Section title="Required Qualifications">
-              <BulletList items={jd.requiredQualifications} bulletColor="#050766" />
+              <BulletList items={jd.requiredQualifications} bulletColor={C.LAPIS} />
             </Section>
           )}
           {jd.niceToHaves?.length > 0 && (
             <Section title="Nice to Haves">
-              <BulletList items={jd.niceToHaves} bulletColor="#8939A1" />
+              <BulletList items={jd.niceToHaves} bulletColor={C.PURPLE} />
             </Section>
           )}
           {jd.benefits?.length > 0 && (
             <Section title="Benefits">
-              <BulletList items={jd.benefits} bulletColor="#1F9E6C" />
+              <BulletList items={jd.benefits} bulletColor={C.SUCCESS} />
             </Section>
           )}
         </div>

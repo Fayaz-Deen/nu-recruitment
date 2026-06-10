@@ -54,12 +54,12 @@ function SlotRow({
         <div className="flex items-center gap-1 shrink-0">
           <button onClick={() => onEdit(slot)}
             className="p-1 rounded-lg transition-colors hover:bg-white"
-            title="Edit slot">
+            title="Edit slot" aria-label="Edit slot">
             <Pencil className="w-3 h-3" style={{ color: C.TEXT_MUTED }} />
           </button>
           <button onClick={() => onDelete(slot.id)}
             className="p-1 rounded-lg transition-colors hover:bg-white"
-            title="Remove slot">
+            title="Remove slot" aria-label="Remove slot">
             <Trash2 className="w-3 h-3" style={{ color: C.RED }} />
           </button>
         </div>

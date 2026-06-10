@@ -73,7 +73,7 @@ export default function UsersPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: C.TEXT }}>Team Members</h1>
+          <h1 className="font-display text-2xl font-semibold tracking-tight" style={{ color: C.TEXT }}>Team Members</h1>
           <p className="text-sm mt-1" style={{ color: C.TEXT_MUTED }}>
             Manage users, roles, and invite new team members.
           </p>
@@ -137,7 +137,7 @@ export default function UsersPage() {
                   {/* Avatar */}
                   <div
                     className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 font-semibold text-sm"
-                    style={{ background: C.GRAD_JD, color: 'white' }}
+                    style={{ backgroundColor: C.PRIMARY_LIGHT, color: C.LAPIS }}
                   >
                     {(user.name || user.email)[0].toUpperCase()}
                   </div>
@@ -231,6 +231,7 @@ export default function UsersPage() {
                       <>
                         <button
                           onClick={() => setActiveMenu(activeMenu === user.id ? null : user.id)}
+                          aria-label={`Actions for ${user.name || user.email}`}
                           className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
                           style={{ color: C.TEXT_MUTED }}
                           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = C.PRIMARY_LIGHT)}
@@ -306,8 +307,8 @@ function ActionMenu({
 }) {
   return (
     <div
-      className="absolute right-0 top-8 bg-white rounded-xl shadow-lg z-20 py-1 w-44"
-      style={{ border: `1px solid ${C.BORDER}`, boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}
+      className="absolute right-0 top-8 bg-white rounded-xl z-20 py-1 w-44"
+      style={{ border: `1px solid ${C.BORDER}`, boxShadow: '0 2px 8px rgba(15,22,64,0.10)' }}
     >
       {user.status === 'invited' && (
         <>
@@ -434,33 +435,31 @@ function InviteModal({
         ) : (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1.5" style={{ color: C.TEXT }}>
+              <label htmlFor="invite-email" className="block text-sm font-medium mb-1.5" style={{ color: C.TEXT }}>
                 Email address
               </label>
               <input
+                id="invite-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="colleague@company.com"
                 required
-                className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all"
-                style={{ border: `1.5px solid ${C.BORDER}`, color: C.TEXT }}
-                onFocus={(e) => (e.currentTarget.style.borderColor = C.LAPIS)}
-                onBlur={(e) => (e.currentTarget.style.borderColor = C.BORDER)}
+                className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none bg-white transition-all border-[1.5px] focus:shadow-[0_0_0_4px_var(--brand-primary-ring)]"
+                style={{ borderColor: C.BORDER, color: C.TEXT }}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1.5" style={{ color: C.TEXT }}>
+              <label htmlFor="invite-role" className="block text-sm font-medium mb-1.5" style={{ color: C.TEXT }}>
                 Role
               </label>
               <select
+                id="invite-role"
                 value={role}
                 onChange={(e) => setRole(e.target.value as UserRole)}
-                className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all"
-                style={{ border: `1.5px solid ${C.BORDER}`, color: C.TEXT }}
-                onFocus={(e) => (e.currentTarget.style.borderColor = C.LAPIS)}
-                onBlur={(e) => (e.currentTarget.style.borderColor = C.BORDER)}
+                className="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none bg-white transition-all border-[1.5px] focus:shadow-[0_0_0_4px_var(--brand-primary-ring)]"
+                style={{ borderColor: C.BORDER, color: C.TEXT }}
               >
                 {availableRoles.map((r) => (
                   <option key={r.value} value={r.value}>{r.label}</option>
@@ -470,12 +469,13 @@ function InviteModal({
             </div>
 
             {error && (
-              <div
-                className="text-sm px-4 py-3 rounded-xl"
+              <p
+                role="alert"
+                className="text-sm px-4 py-3 rounded-xl animate-pop-in"
                 style={{ backgroundColor: C.ACCENT_BG, color: C.RED, border: `1px solid ${C.ACCENT_BORDER}` }}
               >
                 {error}
-              </div>
+              </p>
             )}
 
             <div className="flex gap-3 pt-1">
@@ -505,7 +505,7 @@ function InviteModal({
 
 function RoleDescription({ role }: { role: UserRole }) {
   const descriptions: Record<UserRole, string> = {
-    super_admin:    'Full access — user management, all data, settings.',
+    super_admin:    'Full access: user management, all data, settings.',
     hr_admin:       'Manage all jobs and candidates. Cannot manage users.',
     recruiter:      'Create JDs, screen resumes, guides, and emails for own jobs.',
     hiring_manager: 'View JDs and screened candidates. Can add comments.',

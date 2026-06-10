@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { ChevronDown, Search, X } from 'lucide-react'
 import { JobDescription } from '../types'
 import clsx from 'clsx'
+import { C } from '../tokens'
 
 interface Props {
   jobs: JobDescription[]
@@ -70,10 +71,8 @@ export default function JobSelect({
     <div ref={ref} className="relative">
       {/* Trigger */}
       <div
-        className={clsx(
-          'input flex items-center gap-2 cursor-pointer select-none',
-          open && 'ring-2 ring-blue-500 border-blue-500'
-        )}
+        className="input flex items-center gap-2 cursor-pointer select-none"
+        style={open ? { borderColor: C.LAPIS, boxShadow: `0 0 0 3px ${C.PRIMARY_LIGHT}` } : undefined}
         onClick={open ? undefined : openDropdown}
       >
         <Search className="w-4 h-4 text-gray-400 shrink-0" />
@@ -94,6 +93,8 @@ export default function JobSelect({
 
         {selected && !open ? (
           <X
+            role="button"
+            aria-label="Clear selected job"
             className="w-4 h-4 text-gray-400 hover:text-gray-600 shrink-0"
             onClick={clear}
           />
@@ -109,28 +110,40 @@ export default function JobSelect({
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+        <div
+          className="absolute z-20 mt-1 w-full bg-white rounded-lg max-h-64 overflow-y-auto"
+          style={{ border: `1px solid ${C.BORDER}`, boxShadow: '0 4px 8px rgba(15,22,64,0.08)' }}
+        >
           {filtered.length === 0 ? (
             <p className="text-sm text-gray-500 px-4 py-3">No jobs match &ldquo;{query}&rdquo;</p>
           ) : (
-            filtered.map((j) => (
-              <button
-                key={j.id}
-                type="button"
-                className={clsx(
-                  'w-full text-left px-4 py-2.5 text-sm hover:bg-blue-50 transition-colors flex items-center gap-3',
-                  j.id === value && 'bg-blue-50 font-medium text-blue-700'
-                )}
-                onClick={() => select(j)}
-              >
-                {j.jobNumber != null && (
-                  <span className="text-xs font-mono text-gray-400 shrink-0 w-10">
-                    #{String(j.jobNumber).padStart(3, '0')}
-                  </span>
-                )}
-                <span className="truncate">{j.title}</span>
-              </button>
-            ))
+            filtered.map((j) => {
+              const isSelected = j.id === value
+              return (
+                <button
+                  key={j.id}
+                  type="button"
+                  className={clsx(
+                    'w-full text-left px-4 py-2.5 text-sm transition-colors flex items-center gap-3',
+                    isSelected && 'font-medium'
+                  )}
+                  style={{
+                    backgroundColor: isSelected ? C.PRIMARY_LIGHT : 'transparent',
+                    color: isSelected ? C.LAPIS : C.TEXT,
+                  }}
+                  onMouseEnter={(e) => { if (!isSelected) e.currentTarget.style.backgroundColor = C.ROW_HOVER }}
+                  onMouseLeave={(e) => { if (!isSelected) e.currentTarget.style.backgroundColor = 'transparent' }}
+                  onClick={() => select(j)}
+                >
+                  {j.jobNumber != null && (
+                    <span className="text-xs font-mono text-gray-400 shrink-0 w-10">
+                      #{String(j.jobNumber).padStart(3, '0')}
+                    </span>
+                  )}
+                  <span className="truncate">{j.title}</span>
+                </button>
+              )
+            })
           )}
         </div>
       )}

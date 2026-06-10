@@ -54,7 +54,7 @@ export default function JDGeneratorPage() {
   return (
     <div className="max-w-5xl animate-fade-in-up">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold" style={{ color: C.TEXT }}>JD Generator</h1>
+        <h1 className="font-display text-2xl font-semibold tracking-tight" style={{ color: C.TEXT }}>JD Generator</h1>
         <p className="text-sm mt-1" style={{ color: C.TEXT_MUTED }}>Generate a compelling job description with AI</p>
       </div>
 
@@ -171,34 +171,23 @@ export default function JDGeneratorPage() {
         {/* ── Right — Preview ───────────────────────────────────────── */}
         <div className="card overflow-auto max-h-[760px]">
 
-          {/* Generating state */}
+          {/* Generating state — skeleton mirrors the generated JD layout */}
           {mutation.isPending && (
-            <div className="flex flex-col items-center justify-center h-full py-16 text-center">
-              <div className="relative mb-5">
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                  style={{ backgroundColor: C.PRIMARY_LIGHT }}
-                >
-                  <Wand2 className="w-7 h-7 animate-pulse" style={{ color: 'rgba(5,7,102,0.55)' }} />
-                </div>
-                <span
-                  className="absolute -top-1 -right-1 w-4 h-4 rounded-full animate-ping"
-                  style={{ backgroundColor: C.LAPIS }}
-                />
+            <div className="space-y-5" aria-busy="true">
+              <p className="text-xs" style={{ color: C.TEXT_MUTED }}>Writing your job description with AI</p>
+              <div className="pb-4 space-y-2.5" style={{ borderBottom: `1px solid ${C.DIVIDER}` }}>
+                <div className="h-5 w-2/3 rounded animate-pulse" style={{ backgroundColor: C.SKELETON }} />
+                <div className="h-3 w-full rounded animate-pulse" style={{ backgroundColor: C.SKELETON }} />
+                <div className="h-3 w-5/6 rounded animate-pulse" style={{ backgroundColor: C.SKELETON }} />
               </div>
-              <p className="font-bold mb-1" style={{ color: C.TEXT }}>AI is writing your JD…</p>
-              <p className="text-xs mb-6" style={{ color: C.TEXT_MUTED }}>Gemini 2.5 Flash is generating a NULogic-branded job description</p>
-              <div className="w-48 space-y-2">
-                <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: C.SKELETON }}>
-                  <div className="h-full shimmer rounded-full" />
+              {[0, 1, 2, 3].map((n) => (
+                <div key={n} className="space-y-2">
+                  <div className="h-3 w-36 rounded animate-pulse" style={{ backgroundColor: C.SKELETON }} />
+                  <div className="h-3 w-full rounded animate-pulse" style={{ backgroundColor: C.SKELETON }} />
+                  <div className="h-3 w-11/12 rounded animate-pulse" style={{ backgroundColor: C.SKELETON }} />
+                  <div className="h-3 w-4/5 rounded animate-pulse" style={{ backgroundColor: C.SKELETON }} />
                 </div>
-                <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: C.SKELETON }}>
-                  <div className="h-full shimmer rounded-full" style={{ animationDelay: '200ms' }} />
-                </div>
-                <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: C.SKELETON }}>
-                  <div className="h-full shimmer rounded-full" style={{ animationDelay: '400ms' }} />
-                </div>
-              </div>
+              ))}
             </div>
           )}
 
@@ -231,24 +220,24 @@ export default function JDGeneratorPage() {
                 )}
               </div>
 
-              <JDSection icon={Target} title="Role Overview" color="text-[#050766]">
+              <JDSection icon={Target} title="Role Overview">
                 <p className="text-sm leading-relaxed" style={{ color: C.TEXT_MUTED }}>{generatedJD.roleOverview}</p>
               </JDSection>
 
-              <JDSection icon={Users} title="Responsibilities" color="text-[#25255C]">
-                <BulletList items={generatedJD.responsibilities} bullet="▸" color="text-[#8939A1]" />
+              <JDSection icon={Users} title="Responsibilities">
+                <BulletList items={generatedJD.responsibilities} bullet="▸" />
               </JDSection>
 
-              <JDSection icon={CheckCircle2} title="Required Qualifications" color="text-[#1F9E6C]">
-                <BulletList items={generatedJD.requiredQualifications} bullet="✓" color="text-emerald-500" />
+              <JDSection icon={CheckCircle2} title="Required Qualifications">
+                <BulletList items={generatedJD.requiredQualifications} bullet="✓" />
               </JDSection>
 
-              <JDSection icon={Star} title="Nice to Haves" color="text-[#C77A12]">
-                <BulletList items={generatedJD.niceToHaves} bullet="◦" color="text-amber-400" />
+              <JDSection icon={Star} title="Nice to Haves">
+                <BulletList items={generatedJD.niceToHaves} bullet="◦" />
               </JDSection>
 
-              <JDSection icon={Gift} title="Benefits" color="text-[#E62A32]">
-                <BulletList items={generatedJD.benefits} bullet="◦" color="text-pink-400" />
+              <JDSection icon={Gift} title="Benefits">
+                <BulletList items={generatedJD.benefits} bullet="◦" />
               </JDSection>
             </div>
           )}
@@ -284,17 +273,16 @@ export default function JDGeneratorPage() {
 // ── Sub-components ─────────────────────────────────────────────────────────
 
 function JDSection({
-  icon: Icon, title, color, children,
+  icon: Icon, title, children,
 }: {
   icon: React.ElementType
   title: string
-  color: string
   children: React.ReactNode
 }) {
   return (
     <div>
       <div className="flex items-center gap-2 mb-2.5">
-        <Icon className={`w-4 h-4 ${color} shrink-0`} />
+        <Icon className="w-4 h-4 shrink-0" style={{ color: C.LAPIS }} />
         <h3 className="section-label">{title}</h3>
       </div>
       {children}
@@ -302,12 +290,12 @@ function JDSection({
   )
 }
 
-function BulletList({ items, bullet, color }: { items: string[]; bullet: string; color: string }) {
+function BulletList({ items, bullet }: { items: string[]; bullet: string }) {
   return (
     <ul className="space-y-1.5">
       {items.map((item, i) => (
         <li key={i} className="flex gap-2 text-sm" style={{ color: C.TEXT_MUTED }}>
-          <span className={`${color} shrink-0 mt-0.5 select-none`}>{bullet}</span>
+          <span className="shrink-0 mt-0.5 select-none" style={{ color: C.TEXT_SUBTLE }}>{bullet}</span>
           <span>{item}</span>
         </li>
       ))}

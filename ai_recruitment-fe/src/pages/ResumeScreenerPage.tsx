@@ -191,7 +191,7 @@ export default function ResumeScreenerPage() {
       queryClient.invalidateQueries({ queryKey: ['jd-list'] })
       const biasCount = data.evaluations.filter((e) => (e.biasFlags?.length ?? 0) > 0).length
       if (biasCount > 0) {
-        toast(`${biasCount} bias flag${biasCount > 1 ? 's' : ''} detected — review carefully`, { icon: '⚠️' })
+        toast(`${biasCount} bias flag${biasCount > 1 ? 's' : ''} detected - review carefully`)
       }
       toast.success(`Screened ${data.total} candidate${data.total > 1 ? 's' : ''}`)
     },
@@ -205,7 +205,7 @@ export default function ResumeScreenerPage() {
       toast.success('Interest check email sent to candidate')
     },
     onError: (err: unknown) => {
-      toast.error(getApiErrorMessage(err, 'Failed to send — candidate may have no email on file'))
+      toast.error(getApiErrorMessage(err, 'Failed to send - candidate may have no email on file'))
     },
   })
 
@@ -216,7 +216,7 @@ export default function ResumeScreenerPage() {
   return (
     <div className="max-w-4xl animate-fade-in-up">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold" style={{ color: C.TEXT }}>Resume Screener</h1>
+        <h1 className="font-display text-2xl font-semibold tracking-tight" style={{ color: C.TEXT }}>Resume Screener</h1>
         <p className="text-sm mt-1" style={{ color: C.TEXT_MUTED }}>Upload resumes and screen them against a job description</p>
       </div>
 
@@ -354,7 +354,7 @@ export default function ResumeScreenerPage() {
                   {duplicates.map((d, i) => (
                     <li key={i} className="text-xs" style={{ color: C.TEXT_MUTED }}>
                       <span className="font-medium">{toDisplayName(fileNameMap[d.newCandidateId] ?? d.newCandidateId)}</span>
-                      {' — '}
+                      {' - '}
                       {d.matchType === 'email' ? 'exact email match with' : 'possible name match with'}{' '}
                       an existing candidate
                       {d.existingJobTitle ? ` (${d.existingJobTitle})` : ''}
@@ -370,7 +370,6 @@ export default function ResumeScreenerPage() {
         {uploadedIds.length > 0 && evaluations.length === 0 && (
           <button
             className="btn-primary w-full justify-center py-3"
-            style={{ background: C.GRAD_SCREEN_BTN }}
             disabled={screenMutation.isPending}
             onClick={() => screenMutation.mutate()}
           >
@@ -408,7 +407,7 @@ export default function ResumeScreenerPage() {
                   >
                     <AlertTriangle className="w-3 h-3 shrink-0" style={{ color: C.WARNING }} />
                     <span className="text-xs font-medium" style={{ color: C.TEXT }}>
-                      {biasedCount} bias flag{biasedCount > 1 ? 's' : ''} — review manually
+                      {biasedCount} bias flag{biasedCount > 1 ? 's' : ''} - review manually
                     </span>
                   </div>
                 )}
@@ -423,7 +422,7 @@ export default function ResumeScreenerPage() {
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div style={{ borderTop: `1px solid ${C.DIVIDER}` }}>
               {evaluations.map((ev, i) => {
                 const rawName      = fileNameMap[ev.candidateId] ?? ''
                 const name         = rawName ? toDisplayName(rawName) : truncateFilename(ev.candidateId.slice(0, 8))
@@ -439,8 +438,8 @@ export default function ResumeScreenerPage() {
                 return (
                   <div
                     key={ev.candidateId}
-                    className="rounded-xl overflow-hidden animate-fade-in-up"
-                    style={{ animationDelay: `${i * 60}ms`, border: `1px solid ${C.BORDER}` }}
+                    className="animate-fade-in-up"
+                    style={{ animationDelay: `${i * 60}ms`, borderBottom: `1px solid ${C.DIVIDER}` }}
                   >
                     {/* Row */}
                     <button
@@ -514,7 +513,7 @@ export default function ResumeScreenerPage() {
 
                     {/* Expanded detail */}
                     {isExpanded && (
-                      <div className="px-4 pb-5 pt-1 space-y-5 animate-fade-in" style={{ borderTop: `1px solid ${C.BORDER}` }}>
+                      <div className="px-4 pb-5 pt-1 space-y-5 animate-fade-in" style={{ borderTop: `1px solid ${C.DIVIDER}` }}>
 
                         {/* Score breakdown */}
                         <div>
@@ -526,7 +525,7 @@ export default function ResumeScreenerPage() {
                         {ev.reasoning && (
                           <div
                             className="p-4 rounded-xl"
-                            style={{ backgroundColor: C.PRIMARY_LIGHT, border: `1px solid ${C.PRIMARY_RING}` }}
+                            style={{ backgroundColor: C.PRIMARY_LIGHT }}
                           >
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center gap-2">
@@ -535,11 +534,11 @@ export default function ResumeScreenerPage() {
                               </div>
                               {ev.confidenceScore != null && (
                                 <span
-                                  className="text-xs px-2 py-0.5 rounded-md font-medium"
+                                  className="text-xs px-2 py-0.5 rounded-md font-medium tabular-nums"
                                   style={confidenceStyle(ev.confidenceScore)}
                                   title={ev.confidenceReason ?? ''}
                                 >
-                                  {ev.confidenceScore}% — {confidenceLabel(ev.confidenceScore)}
+                                  {ev.confidenceScore}% {confidenceLabel(ev.confidenceScore)}
                                 </span>
                               )}
                             </div>
@@ -613,7 +612,7 @@ export default function ResumeScreenerPage() {
                         {hasBias && (
                           <div
                             className="p-3 rounded-xl"
-                            style={{ backgroundColor: C.WARNING_BG, border: `1px solid ${C.WARNING_BORDER}` }}
+                            style={{ backgroundColor: C.WARNING_BG }}
                           >
                             <div className="flex items-center gap-1.5 mb-1.5">
                               <AlertTriangle className="w-3.5 h-3.5 shrink-0" style={{ color: C.WARNING }} />
@@ -638,7 +637,7 @@ export default function ResumeScreenerPage() {
                         )}
 
                         {/* Action buttons */}
-                        <div className="flex flex-wrap gap-2 pt-2" style={{ borderTop: `1px solid ${C.BORDER}` }}>
+                        <div className="flex flex-wrap gap-2 pt-2" style={{ borderTop: `1px solid ${C.DIVIDER}` }}>
                           {ev.jobId && (
                             <>
                               <button
@@ -664,7 +663,7 @@ export default function ResumeScreenerPage() {
                               className="btn-secondary text-xs py-1.5"
                               disabled={checkInterestMutation.isPending || interest === 'checked'}
                               onClick={() => checkInterestMutation.mutate(ev.candidateId)}
-                              title={interest === 'checked' ? 'Already sent — awaiting reply' : 'Send a "still looking?" email'}
+                              title={interest === 'checked' ? 'Already sent, awaiting reply' : 'Send a "still looking?" email'}
                             >
                               <Bell className="w-3.5 h-3.5" />
                               {interest === 'checked' ? 'Check sent' : 'Check Interest'}

@@ -47,8 +47,18 @@ export default function SchedulePage() {
   // ── Loading ──────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: C.BG }}>
-        <Loader2 className="w-7 h-7 animate-spin" style={{ color: C.LAPIS }} />
+      <div className="min-h-screen py-12 px-4" style={{ backgroundColor: C.BG }}>
+        <div className="max-w-lg mx-auto">
+          <div className="w-12 h-12 rounded-2xl animate-pulse mb-5" style={{ backgroundColor: C.SKELETON }} />
+          <div className="h-7 w-3/5 rounded animate-pulse mb-3" style={{ backgroundColor: C.SKELETON }} />
+          <div className="h-4 w-4/5 rounded animate-pulse mb-8" style={{ backgroundColor: C.SKELETON }} />
+          <div className="space-y-2.5 mb-6">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="h-16 rounded-xl animate-pulse" style={{ backgroundColor: C.SKELETON }} />
+            ))}
+          </div>
+          <div className="h-11 rounded-xl animate-pulse" style={{ backgroundColor: C.SKELETON }} />
+        </div>
       </div>
     )
   }
@@ -59,7 +69,7 @@ export default function SchedulePage() {
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: C.BG }}>
         <div className="text-center max-w-sm px-6">
           <AlertCircle className="w-10 h-10 mx-auto mb-4" style={{ color: C.RED }} />
-          <p className="text-lg font-semibold mb-1" style={{ color: C.TEXT }}>Link not found</p>
+          <p className="font-display text-lg font-semibold tracking-tight mb-1" style={{ color: C.TEXT }}>Link not found</p>
           <p className="text-sm" style={{ color: C.TEXT_MUTED }}>
             This scheduling link is invalid or has expired. Please contact the recruiter.
           </p>
@@ -77,7 +87,7 @@ export default function SchedulePage() {
             style={{ backgroundColor: C.BG, border: `1px solid ${C.BORDER}` }}>
             <Clock className="w-6 h-6" style={{ color: C.TEXT_SUBTLE }} />
           </div>
-          <p className="text-xl font-bold mb-2" style={{ color: C.TEXT }}>These slots are no longer available</p>
+          <p className="font-display text-xl font-semibold tracking-tight mb-2" style={{ color: C.TEXT }}>These slots are no longer available</p>
           <p className="text-sm" style={{ color: C.TEXT_MUTED }}>
             This scheduling link has expired. Our team will be in touch to arrange a suitable time.
           </p>
@@ -96,7 +106,7 @@ export default function SchedulePage() {
             style={{ backgroundColor: C.WARNING_BG }}>
             <Calendar className="w-6 h-6" style={{ color: C.WARNING }} />
           </div>
-          <p className="text-xl font-bold mb-1" style={{ color: C.TEXT }}>We'll be in touch</p>
+          <p className="font-display text-xl font-semibold tracking-tight mb-1" style={{ color: C.TEXT }}>We'll be in touch</p>
           <p className="text-sm mt-1" style={{ color: C.TEXT_MUTED }}>
             Thanks for letting us know. Our team has been notified and will reach out to schedule a time that works for you.
           </p>
@@ -113,7 +123,7 @@ export default function SchedulePage() {
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: C.BG }}>
         <div className="text-center max-w-sm px-6">
           <CheckCircle className="w-12 h-12 mx-auto mb-4" style={{ color: C.SUCCESS }} />
-          <p className="text-xl font-bold mb-1" style={{ color: C.TEXT }}>Interview Confirmed!</p>
+          <p className="font-display text-xl font-semibold tracking-tight mb-1" style={{ color: C.TEXT }}>Interview Confirmed</p>
           <p className="text-sm mb-4" style={{ color: C.TEXT_MUTED }}>
             Your interview for <strong>{data.jobTitle}</strong> at NULogic has been scheduled.
           </p>
@@ -142,7 +152,7 @@ export default function SchedulePage() {
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: C.BG }}>
         <div className="text-center max-w-sm px-6">
           <Calendar className="w-10 h-10 mx-auto mb-4" style={{ color: C.TEXT_SUBTLE }} />
-          <p className="text-lg font-semibold mb-1" style={{ color: C.TEXT }}>No slots available</p>
+          <p className="font-display text-lg font-semibold tracking-tight mb-1" style={{ color: C.TEXT }}>No slots available</p>
           <p className="text-sm" style={{ color: C.TEXT_MUTED }}>
             The recruiter hasn't added interview slots yet. Please check back soon.
           </p>
@@ -157,19 +167,17 @@ export default function SchedulePage() {
       <div className="max-w-lg mx-auto">
 
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-4"
+        <div className="mb-8">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-5"
             style={{ backgroundColor: C.PRIMARY_LIGHT }}>
             <Calendar className="w-6 h-6" style={{ color: C.LAPIS }} />
           </div>
-          <h1 className="text-2xl font-bold mb-1" style={{ color: C.TEXT }}>
+          <h1 className="font-display text-2xl font-semibold tracking-tight mb-1" style={{ color: C.TEXT }}>
             Select an Interview Slot
           </h1>
-          {data.candidateName && (
-            <p className="text-sm" style={{ color: C.TEXT_MUTED }}>Hi {data.candidateName},</p>
-          )}
           <p className="text-sm mt-1" style={{ color: C.TEXT_MUTED }}>
-            You've been shortlisted for <strong style={{ color: C.TEXT }}>{data.jobTitle}</strong> at NULogic.
+            {data.candidateName ? `Hi ${data.candidateName}, you` : 'You'}'ve been shortlisted for{' '}
+            <strong style={{ color: C.TEXT }}>{data.jobTitle}</strong> at NULogic.
             Pick a time that works best for you.
           </p>
         </div>
@@ -188,8 +196,8 @@ export default function SchedulePage() {
                 className="w-full text-left rounded-xl px-4 py-3.5 transition-all duration-150"
                 style={{
                   backgroundColor: isSelected ? C.PRIMARY_LIGHT : '#ffffff',
-                  border: `2px solid ${isSelected ? C.LAPIS : C.BORDER}`,
-                  boxShadow: isSelected ? `0 0 0 3px ${C.PRIMARY_RING}` : undefined,
+                  border: `1px solid ${isSelected ? C.LAPIS : C.BORDER}`,
+                  boxShadow: isSelected ? `0 0 0 1px ${C.LAPIS}` : undefined,
                 }}
               >
                 <div className="flex items-center gap-3">

@@ -151,7 +151,7 @@ export default function InterviewPage() {
     <div className="max-w-4xl space-y-6 animate-fade-in-up">
 
       <div>
-        <h1 className="text-2xl font-bold" style={{ color: C.TEXT }}>Interview Guide</h1>
+        <h1 className="font-display text-2xl font-semibold tracking-tight" style={{ color: C.TEXT }}>Interview Guide</h1>
         <p className="text-sm mt-1" style={{ color: C.TEXT_MUTED }}>Generate role-specific interview questions and rubrics</p>
       </div>
 
@@ -223,13 +223,13 @@ export default function InterviewPage() {
               ))}
             </div>
           ) : candidates.length === 0 ? (
-            <p className="text-sm text-gray-500 py-4 text-center">
+            <p className="text-sm py-4 text-center" style={{ color: C.TEXT_MUTED }}>
               No candidates screened for this role yet.{' '}
               <a href="/resume-screener" style={{ color: C.LAPIS }} className="hover:underline">Go to Resume Screener</a>{' '}
               to screen resumes first.
             </p>
           ) : eligibleCandidates.length === 0 ? (
-            <p className="text-sm text-gray-500 py-4 text-center">
+            <p className="text-sm py-4 text-center" style={{ color: C.TEXT_MUTED }}>
               No candidates scored 65% or above for this role.
             </p>
           ) : (
@@ -247,7 +247,7 @@ export default function InterviewPage() {
                     className="flex items-center gap-3 py-2.5 px-3 -mx-3 rounded-xl
                                last:border-0 transition-colors duration-150 animate-fade-in-up"
                     style={{ borderBottom: `1px solid ${C.DIVIDER}`, animationDelay: `${i * 50}ms` }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = C.PRIMARY_LIGHT }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = C.ROW_HOVER }}
                     onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent' }}
                   >
                     <div className="flex-1 min-w-0">
@@ -375,7 +375,7 @@ export default function InterviewPage() {
                               className="flex gap-3 animate-fade-in-up"
                               style={{ animationDelay: `${i * 70}ms` }}
                             >
-                              <span className="shrink-0 font-mono text-sm mt-0.5 w-5 text-right" style={{ color: 'rgba(5,7,102,0.45)' }}>
+                              <span className="shrink-0 font-mono text-sm mt-0.5 w-5 text-right" style={{ color: C.TEXT_MUTED }}>
                                 {i + 1}.
                               </span>
                               <div>
@@ -404,7 +404,7 @@ export default function InterviewPage() {
                               className="flex gap-3 animate-fade-in-up"
                               style={{ animationDelay: `${i * 70}ms` }}
                             >
-                              <span className="shrink-0 font-mono text-sm mt-0.5 w-5 text-right" style={{ color: 'rgba(37,37,92,0.5)' }}>
+                              <span className="shrink-0 font-mono text-sm mt-0.5 w-5 text-right" style={{ color: C.TEXT_MUTED }}>
                                 {i + 1}.
                               </span>
                               <div>
@@ -446,7 +446,7 @@ export default function InterviewPage() {
                                     {c.scores.map((s) => (
                                       <p key={s.score} className="text-xs">
                                         <span className="font-semibold" style={{ color: C.TEXT }}>{s.score}</span>
-                                        {' — '}{s.description}
+                                        {' · '}{s.description}
                                       </p>
                                     ))}
                                   </td>
@@ -466,7 +466,7 @@ export default function InterviewPage() {
                           {guide.redFlagsToWatch.map((flag, i) => (
                             <li key={i} className="flex gap-2.5 text-sm print-red-flag">
                               <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: C.RED }} />
-                              <span style={{ color: C.RED }}>{flag}</span>
+                              <span style={{ color: C.TEXT }}>{flag}</span>
                             </li>
                           ))}
                         </ul>

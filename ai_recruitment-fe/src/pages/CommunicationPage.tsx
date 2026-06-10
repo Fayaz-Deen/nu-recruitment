@@ -91,7 +91,7 @@ export default function CommunicationPage() {
       addEmail(email)
       return true
     } catch (err) {
-      toast.error(`Failed to draft email for ${displayName} — please try again`)
+      toast.error(`Failed to draft email for ${displayName}. Please try again`)
       return false
     } finally {
       setDraftingIds((prev) => { const s = new Set(prev); s.delete(c.candidateId); return s })
@@ -169,7 +169,7 @@ export default function CommunicationPage() {
 
   const saveEdit = (emailId: string) => {
     setEditingIds((prev) => { const s = new Set(prev); s.delete(emailId); return s })
-    toast.success('Edits saved — will be used when you send')
+    toast.success('Edits saved. They will be used when you send')
   }
 
   const updateEditField = (emailId: string, field: 'subject' | 'body', value: string) => {
@@ -213,7 +213,7 @@ export default function CommunicationPage() {
       <div
         className="flex items-center gap-3 py-2.5 px-3 -mx-3 rounded-xl last:border-0 transition-colors duration-150"
         style={{ borderBottom: `1px solid ${C.DIVIDER}` }}
-        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = C.PRIMARY_LIGHT }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = C.ROW_HOVER }}
         onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent' }}
       >
         <div className="flex-1 min-w-0">
@@ -273,7 +273,7 @@ export default function CommunicationPage() {
     <div className="max-w-4xl space-y-6 animate-fade-in-up">
 
       <div>
-        <h1 className="text-2xl font-bold" style={{ color: C.TEXT }}>Communications</h1>
+        <h1 className="font-display text-2xl font-semibold tracking-tight" style={{ color: C.TEXT }}>Communications</h1>
         <p className="text-sm mt-1" style={{ color: C.TEXT_MUTED }}>
           Draft personalised candidate emails based on screening results
         </p>
@@ -405,7 +405,7 @@ export default function CommunicationPage() {
                 {/* Header */}
                 <button
                   className="w-full flex items-center justify-between p-5 text-left transition-colors duration-150"
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = C.PRIMARY_LIGHT }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = C.ROW_HOVER }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent' }}
                   onClick={() => setExpandedEmailId(isExpanded ? null : email.emailId)}
                 >

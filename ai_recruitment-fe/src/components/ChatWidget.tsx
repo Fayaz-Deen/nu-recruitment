@@ -26,20 +26,19 @@ interface ChatMsg {
 
 // ── Tool metadata ─────────────────────────────────────────────────────────────
 
-const TOOL_META: Record<string, { label: string; icon: string }> = {
-  get_stats:               { label: 'Analyzing hiring metrics',    icon: '📊' },
-  get_pipeline:            { label: 'Loading hiring pipeline',     icon: '🔄' },
-  list_jobs:               { label: 'Fetching job listings',       icon: '📋' },
-  create_job:              { label: 'Generating job description',  icon: '✍️'  },
-  search_candidates:       { label: 'Searching talent pool',       icon: '🔍' },
-  get_candidate_details:   { label: 'Loading candidate profile',   icon: '👤' },
-  generate_interview_guide:{ label: 'Creating interview guide',    icon: '📝' },
-  draft_email:             { label: 'Drafting email',              icon: '✉️'  },
-  list_team:               { label: 'Loading team members',        icon: '👥' },
+const TOOL_META: Record<string, { label: string }> = {
+  get_stats:               { label: 'Analyzing hiring metrics'   },
+  get_pipeline:            { label: 'Loading hiring pipeline'    },
+  list_jobs:               { label: 'Fetching job listings'      },
+  create_job:              { label: 'Generating job description' },
+  search_candidates:       { label: 'Searching talent pool'      },
+  get_candidate_details:   { label: 'Loading candidate profile'  },
+  generate_interview_guide:{ label: 'Creating interview guide'   },
+  draft_email:             { label: 'Drafting email'             },
+  list_team:               { label: 'Loading team members'       },
 }
 
 const toolLabel = (name: string) => TOOL_META[name]?.label ?? name
-const toolIcon  = (name: string) => TOOL_META[name]?.icon  ?? '⚙️'
 
 // ── Suggested prompts ─────────────────────────────────────────────────────────
 
@@ -93,7 +92,6 @@ function ToolCard({ tool }: { tool: ToolEvent }) {
         style={{ cursor: hasData ? 'pointer' : 'default' }}
         onClick={() => hasData && setExpanded(e => !e)}
       >
-        <span className="text-sm">{toolIcon(tool.name)}</span>
         <span className="flex-1 font-medium" style={{ color: C.TEXT_MUTED }}>{toolLabel(tool.name)}</span>
 
         {tool.status === 'running' && (
@@ -133,7 +131,7 @@ function MessageBubble({ msg }: { msg: ChatMsg }) {
       <div className="flex justify-end mb-3">
         <div
           className="max-w-[82%] px-4 py-2.5 rounded-2xl rounded-tr-sm text-sm"
-          style={{ background: C.GRAD_DARK, color: '#fff' }}
+          style={{ backgroundColor: C.LAPIS, color: '#fff' }}
         >
           {msg.content}
         </div>
@@ -146,9 +144,9 @@ function MessageBubble({ msg }: { msg: ChatMsg }) {
       {/* Avatar */}
       <div
         className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
-        style={{ background: C.GRAD_BRAND }}
+        style={{ backgroundColor: C.PRIMARY_LIGHT }}
       >
-        <Bot className="w-3.5 h-3.5" style={{ color: '#fff' }} />
+        <Bot className="w-3.5 h-3.5" style={{ color: C.LAPIS }} />
       </div>
 
       <div className="flex-1 min-w-0 space-y-1.5">
@@ -361,8 +359,8 @@ export default function ChatWidget() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 pl-4 pr-5 py-3 rounded-2xl shadow-xl transition-all duration-200 hover:scale-105 active:scale-95"
-          style={{ background: C.GRAD_DARK, boxShadow: '0 8px 32px rgba(5,7,102,0.35)' }}
+          className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 pl-4 pr-5 py-3 rounded-2xl transition-all duration-200 hover:scale-105 active:scale-95"
+          style={{ backgroundColor: C.LAPIS, boxShadow: '0 2px 8px rgba(15,22,64,0.16)' }}
           title="Open Recruit AI"
         >
           <Sparkles className="w-4 h-4" style={{ color: '#fff' }} />
@@ -373,38 +371,50 @@ export default function ChatWidget() {
       {/* Drawer */}
       {open && (
         <div
-          className="fixed right-0 top-0 bottom-0 z-50 flex flex-col bg-white shadow-2xl"
+          className="fixed bottom-6 right-6 z-50 flex flex-col bg-white rounded-2xl overflow-hidden"
           style={{
             width: 420,
-            borderLeft: `1px solid ${C.BORDER}`,
-            animation: 'slideInRight 0.22s cubic-bezier(0.22,1,0.36,1)',
+            height: 'min(680px, calc(100vh - 48px))',
+            border: `1px solid ${C.BORDER}`,
+            boxShadow: '0 20px 40px -15px rgba(0,0,0,0.08)',
+            animation: 'chatPanelIn 0.22s cubic-bezier(0.22,1,0.36,1)',
           }}
         >
           {/* Header */}
           <div
-            className="flex items-center gap-3 px-4 py-3.5 shrink-0"
-            style={{ background: C.GRAD_DARK, borderBottom: `1px solid rgba(255,255,255,0.1)` }}
+            className="flex items-center gap-3 px-4 py-3.5 shrink-0 bg-white"
+            style={{ borderBottom: `1px solid ${C.DIVIDER}` }}
           >
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/10">
-              <Sparkles className="w-4 h-4" style={{ color: '#fff' }} />
+            <div
+              className="w-8 h-8 rounded-xl flex items-center justify-center"
+              style={{ backgroundColor: C.PRIMARY_LIGHT }}
+            >
+              <Sparkles className="w-4 h-4" style={{ color: C.LAPIS }} />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-bold" style={{ color: '#fff' }}>Recruit AI</p>
-              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>
+              <p className="text-sm font-bold font-display" style={{ color: C.TEXT }}>Recruit AI</p>
+              <p className="text-xs" style={{ color: C.TEXT_MUTED }}>
                 {user?.name ? `Hi ${user.name.split(' ')[0]}` : 'Hiring assistant'}
               </p>
             </div>
             {busy && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/10">
-                <Loader2 className="w-3 h-3 animate-spin" style={{ color: '#fff' }} />
-                <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>Working…</span>
+              <div
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg"
+                style={{ backgroundColor: C.PRIMARY_LIGHT }}
+              >
+                <Loader2 className="w-3 h-3 animate-spin" style={{ color: C.LAPIS }} />
+                <span className="text-xs font-medium" style={{ color: C.LAPIS }}>Working…</span>
               </div>
             )}
             <button
               onClick={() => { setOpen(false); if (busy) abortRef.current?.abort() }}
-              className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+              className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
+              style={{ color: C.TEXT_MUTED }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor = C.ROW_HOVER }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent' }}
+              aria-label="Close chat"
             >
-              <X className="w-4 h-4" style={{ color: '#fff' }} />
+              <X className="w-4 h-4" />
             </button>
           </div>
 
@@ -417,17 +427,17 @@ export default function ChatWidget() {
                 <div className="flex gap-2 items-start">
                   <div
                     className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
-                    style={{ background: C.GRAD_BRAND }}
+                    style={{ backgroundColor: C.PRIMARY_LIGHT }}
                   >
-                    <Bot className="w-3.5 h-3.5" style={{ color: '#fff' }} />
+                    <Bot className="w-3.5 h-3.5" style={{ color: C.LAPIS }} />
                   </div>
                   <div
                     className="flex-1 bg-white rounded-2xl rounded-tl-sm px-4 py-3 text-sm"
                     style={{ border: `1px solid ${C.BORDER}`, color: C.TEXT }}
                   >
-                    <p className="font-semibold mb-1">Hey{user?.name ? ` ${user.name.split(' ')[0]}` : ''}! 👋</p>
+                    <p className="font-semibold mb-1">Hey{user?.name ? ` ${user.name.split(' ')[0]}` : ''}!</p>
                     <p style={{ color: C.TEXT_MUTED }}>
-                      I can manage your entire hiring pipeline — create JDs, search candidates,
+                      I can manage your entire hiring pipeline: create JDs, search candidates,
                       generate interview guides, draft emails, and more. What do you need?
                     </p>
                   </div>
@@ -521,9 +531,10 @@ export default function ChatWidget() {
                 disabled={!input.trim() || busy}
                 className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all"
                 style={{
-                  background: input.trim() && !busy ? C.GRAD_DARK : C.BORDER,
+                  backgroundColor: input.trim() && !busy ? C.LAPIS : C.BORDER,
                   opacity: input.trim() && !busy ? 1 : 0.5,
                 }}
+                aria-label="Send message"
               >
                 <Send className="w-3.5 h-3.5" style={{ color: input.trim() && !busy ? '#fff' : C.TEXT_MUTED }} />
               </button>
@@ -536,9 +547,9 @@ export default function ChatWidget() {
       )}
 
       <style>{`
-        @keyframes slideInRight {
-          from { transform: translateX(100%); opacity: 0; }
-          to   { transform: translateX(0);    opacity: 1; }
+        @keyframes chatPanelIn {
+          from { transform: translateY(12px); opacity: 0; }
+          to   { transform: translateY(0);    opacity: 1; }
         }
       `}</style>
     </>

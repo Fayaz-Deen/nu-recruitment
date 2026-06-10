@@ -38,7 +38,7 @@ export default function ScoreBreakdown({ scores }: { scores: Scores }) {
           <div key={key}>
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs text-gray-500">{label}</span>
-              <span className="text-xs font-semibold text-gray-700">
+              <span className="text-xs font-semibold text-gray-700 tabular-nums">
                 {score}
                 <span className="font-normal text-gray-400">/{max}</span>
               </span>
@@ -57,7 +57,7 @@ export default function ScoreBreakdown({ scores }: { scores: Scores }) {
         <div>
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs text-red-500 font-medium">Deductions</span>
-            <span className="text-xs font-semibold text-red-600">−{deduction} pts</span>
+            <span className="text-xs font-semibold text-red-600 tabular-nums">−{deduction} pts</span>
           </div>
           <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: C.SKELETON }}>
             <div

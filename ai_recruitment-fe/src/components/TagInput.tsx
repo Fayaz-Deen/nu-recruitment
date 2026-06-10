@@ -65,6 +65,7 @@ export default function TagInput({
                 type="button"
                 onClick={e => { e.stopPropagation(); remove(tag) }}
                 className="ml-0.5 hover:opacity-70 transition-opacity"
+                aria-label={`Remove ${tag}`}
               >
                 <X className="w-3 h-3" />
               </button>
@@ -95,7 +96,7 @@ export default function TagInput({
       {open && filtered.length > 0 && !disabled && (
         <div
           className="absolute left-0 right-0 top-full mt-1 bg-white rounded-xl z-50 py-1 max-h-48 overflow-y-auto"
-          style={{ border: `1px solid ${C.BORDER}`, boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}
+          style={{ border: `1px solid ${C.BORDER}`, boxShadow: '0 4px 8px rgba(15,22,64,0.08)' }}
         >
           {filtered.map(s => (
             <button

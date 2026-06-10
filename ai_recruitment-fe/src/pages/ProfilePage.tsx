@@ -117,7 +117,7 @@ export default function ProfilePage() {
   return (
     <div className="max-w-5xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold" style={{ color: C.TEXT }}>Settings</h1>
+        <h1 className="font-display text-2xl font-semibold tracking-tight" style={{ color: C.TEXT }}>Settings</h1>
         <p className="text-sm mt-1" style={{ color: C.TEXT_MUTED }}>
           Manage your profile and company information used by the AI agents.
         </p>
@@ -342,7 +342,7 @@ function CompanyForm({
   return (
     <Card icon={Building2} title="Company Profile">
       <p className="text-xs mb-5 px-3 py-2.5 rounded-xl" style={{ backgroundColor: C.PRIMARY_LIGHT, color: C.LAPIS }}>
-        This information is injected into every AI prompt — JD generation, resume screening, interview guides, and candidate emails all use it.
+        This information is injected into every AI prompt. JD generation, resume screening, interview guides, and candidate emails all use it.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-5">
@@ -364,8 +364,8 @@ function CompanyForm({
             placeholder="2–3 paragraphs describing the company, products, culture, and what makes it unique. This is the primary context the AI uses."
             className="input w-full resize-none"
           />
-          <p className="text-xs mt-1" style={{ color: C.TEXT_MUTED }}>
-            {form.overview.length} / 3000 chars — more detail = better AI output
+          <p className="text-xs mt-1 tabular-nums" style={{ color: C.TEXT_MUTED }}>
+            {form.overview.length} / 3000 chars. More detail improves AI output.
           </p>
         </Field>
 
@@ -426,7 +426,7 @@ function CompanyForm({
           </Field>
         </div>
 
-        <Divider label="AI Context — used in every prompt" />
+        <Divider label="AI Context, used in every prompt" />
 
         <Field label="Services / Products">
           <TagInput
@@ -550,24 +550,22 @@ function CompletenessCard() {
         More complete = better AI output across all features.
       </p>
 
-      <div className="flex items-center gap-3 mb-4">
-        <div
-          className="w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg shrink-0"
-          style={{
-            background: `conic-gradient(${barColor} ${score}%, ${C.BG} 0%)`,
-            boxShadow: 'inset 0 0 0 6px white',
-          }}
-        >
-          <span style={{ color: barColor }}>{score}%</span>
-        </div>
-        <div>
-          <p className="text-sm font-semibold" style={{ color: isComplete ? C.SUCCESS : C.WARNING }}>
+      <div className="mb-4">
+        <div className="flex items-baseline justify-between mb-2">
+          <span className="font-display text-2xl font-semibold tabular-nums" style={{ color: C.TEXT }}>{score}%</span>
+          <p className="text-xs font-semibold" style={{ color: isComplete ? C.SUCCESS : C.WARNING }}>
             {isComplete ? 'Ready for AI' : 'Needs attention'}
           </p>
-          <p className="text-xs" style={{ color: C.TEXT_MUTED }}>
-            {REQUIRED_AI_FIELDS.length + OPTIONAL_AI_FIELDS.length - missing.length} / {REQUIRED_AI_FIELDS.length + OPTIONAL_AI_FIELDS.length} fields filled
-          </p>
         </div>
+        <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: C.DIVIDER }}>
+          <div
+            className="h-full rounded-full transition-all"
+            style={{ width: `${score}%`, backgroundColor: barColor }}
+          />
+        </div>
+        <p className="text-xs mt-2 tabular-nums" style={{ color: C.TEXT_MUTED }}>
+          {REQUIRED_AI_FIELDS.length + OPTIONAL_AI_FIELDS.length - missing.length} / {REQUIRED_AI_FIELDS.length + OPTIONAL_AI_FIELDS.length} fields filled
+        </p>
       </div>
 
       {requiredMissing.length > 0 && (
@@ -744,7 +742,7 @@ function EmailTemplateEditor({
         <div className="mt-4 mb-2">
           <p className="text-xs font-medium mb-2 flex items-center gap-1.5" style={{ color: C.TEXT_MUTED }}>
             <Tag className="w-3.5 h-3.5" />
-            Available variables — click to insert at cursor
+            Available variables. Click to insert at cursor.
           </p>
           <div className="flex flex-wrap gap-2">
             {template.variables.map(v => (
@@ -763,7 +761,7 @@ function EmailTemplateEditor({
                 onMouseLeave={e => (e.currentTarget.style.backgroundColor = C.PRIMARY_LIGHT)}
               >
                 {`{{${v.key}}}`}
-                <span className="text-xs font-sans ml-1" style={{ color: C.TEXT_MUTED }}>— {v.label}</span>
+                <span className="text-xs font-sans ml-1" style={{ color: C.TEXT_MUTED }}>{v.label}</span>
               </button>
             ))}
           </div>
@@ -800,7 +798,7 @@ function EmailTemplateEditor({
         <div className="flex items-center justify-between mt-5 pt-4" style={{ borderTop: `1px solid ${C.DIVIDER}` }}>
           <div>
             {template.updated_by_name && (
-              <p className="text-xs" style={{ color: C.TEXT_SUBTLE }}>
+              <p className="text-xs tabular-nums" style={{ color: C.TEXT_SUBTLE }}>
                 Last edited by {template.updated_by_name} ({template.updated_by_email}) on{' '}
                 {new Date(template.updated_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
               </p>
@@ -823,8 +821,8 @@ function EmailTemplateEditor({
       {confirmOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30">
           <div
-            className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6"
-            style={{ border: `1px solid ${C.BORDER}` }}
+            className="bg-white rounded-2xl w-full max-w-sm p-6"
+            style={{ border: `1px solid ${C.BORDER}`, boxShadow: '0 4px 8px rgba(15, 22, 64, 0.10)' }}
           >
             <div className="flex items-start gap-3 mb-4">
               <div
@@ -989,7 +987,7 @@ function Card({
         <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: C.PRIMARY_LIGHT }}>
           <Icon className="w-4 h-4" style={{ color: C.LAPIS }} />
         </div>
-        <h2 className="text-base font-semibold" style={{ color: C.TEXT }}>{title}</h2>
+        <h2 className="font-display text-base font-semibold tracking-tight" style={{ color: C.TEXT }}>{title}</h2>
       </div>
       {children}
     </div>
